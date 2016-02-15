@@ -12,15 +12,11 @@ abstract class FizzBuzzBase
     /** @var array */
     protected $source;
 
-    /** @var array */
-    protected $answer;
-
     public function __construct()
     {
         $this->fizz = 3;
         $this->buzz = 5;
         $this->source = range(1, 100);
-        $this->answer = [];
     }
 
     /**

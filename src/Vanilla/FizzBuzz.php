@@ -10,8 +10,11 @@ class FizzBuzz extends FizzBuzzBase
      */
     public function run()
     {
+        $answer = [];
+
         foreach ($this->source as $num) {
             $output = '';
+
             if ($this->isFizz($num)) {
                 $output .= 'Fizz';
             }
@@ -24,10 +27,10 @@ class FizzBuzz extends FizzBuzzBase
                 $output = $num;
             }
 
-            $this->answer[] = $output;
+            $answer[] = $output;
         }
 
-        return $this->answer;
+        return $answer;
     }
 
     private function isFizz($num)
