@@ -1,0 +1,24 @@
+{
+  "name": "johnkary/rethinking-loops",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "John Kary",
+      "email": "john@johnkary.net"
+    },
+    {
+      "name": "Eric Poe",
+      "email": "eric.poe@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0",
+    "ericpoe/ophp": "^0.3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.2"
+  },
+  "autoload": {
+    "psr-4": {"RethinkingLoops\\": "src"}
+  }
+}
