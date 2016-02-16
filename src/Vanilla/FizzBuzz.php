@@ -1,4 +1,5 @@
 <?php
+
 namespace RethinkingLoops\Vanilla;
 
 use RethinkingLoops\FizzBuzzBase;

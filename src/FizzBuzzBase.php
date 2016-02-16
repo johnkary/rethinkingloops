@@ -1,4 +1,5 @@
 <?php
+
 namespace RethinkingLoops;
 
 abstract class FizzBuzzBase
