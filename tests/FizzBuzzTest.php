@@ -23,7 +23,7 @@ class FizzBuzzTest extends \PHPUnit_Framework_TestCase
             91, 92, "Fizz", 94, "Buzz", "Fizz", 97, 98, "Fizz", "Buzz"
         ];
 
-        $this->assertSame($fizzBuzz, $program->run());
+        $this->assertSame($fizzBuzz, $program->run(), sprintf("%s does not properly implement FizzBuzz", get_class($program)));
     }
 
     public function getFizzBuzzImplementations()
