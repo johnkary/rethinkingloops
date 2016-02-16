@@ -4,16 +4,19 @@ namespace RethinkingLoops\Vanilla;
 
 use RethinkingLoops\FizzBuzzBase;
 
+/**
+ * Canonical implementation of FizzBuzz kata
+ */
 class FizzBuzz extends FizzBuzzBase
 {
     /**
-     * @return array
+     * @return array Array values must be numbers, Fizz, Buzz or FizzBuzz
      */
     public function run()
     {
         $answer = [];
 
-        foreach ($this->source as $num) {
+        foreach (range(1,100) as $num) {
             $output = '';
 
             if ($this->isFizz($num)) {
@@ -36,11 +39,11 @@ class FizzBuzz extends FizzBuzzBase
 
     private function isFizz($num)
     {
-        return (0 === $num % $this->fizz);
+        return (0 === $num % 3);
     }
 
     private function isBuzz($num)
     {
-        return (0 === $num % $this->buzz);
+        return (0 === $num % 5);
     }
 }
