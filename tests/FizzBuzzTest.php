@@ -1,13 +1,14 @@
 <?php
 
-class FizzBuzzTest extends PHPUnit_Framework_TestCase
+namespace RethinkingLoops;
+
+class FizzBuzzTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider getFizzBuzzImplementations
-     *
-     * @param $program
+     * @param FizzBuzzBase $program
      */
-    public function testFizzBuzz($program)
+    public function testFizzBuzz(FizzBuzzBase $program)
     {
         $fizzBuzz = [
             1, 2, "Fizz", 4, "Buzz", "Fizz", 7, 8, "Fizz", "Buzz",
@@ -28,9 +29,8 @@ class FizzBuzzTest extends PHPUnit_Framework_TestCase
     public function getFizzBuzzImplementations()
     {
         return [
-            [new RethinkingLoops\Vanilla\FizzBuzz()],
-            [new RethinkingLoops\Haystack\FizzBuzz()],
+            [new Vanilla\FizzBuzz()],
+            [new Haystack\FizzBuzz()],
         ];
     }
-
 }
