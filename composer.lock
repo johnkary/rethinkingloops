@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e7386760bcfbb5acb4e857e9420e9bae",
-    "content-hash": "a0dfa3f2370d2b8d067e7d0f7186783f",
+    "hash": "f7ba4edca97d2e5ac3fab140437f9dab",
+    "content-hash": "c1543eeba265b03fb0958f2bc3cde1bf",
     "packages": [
         {
-            "name": "ericpoe/ophp",
-            "version": "v0.3.0",
+            "name": "ericpoe/haystack",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ericpoe/ophp.git",
-                "reference": "70eb4af4afb8ace669914655e55d748813eb095f"
+                "url": "https://github.com/ericpoe/haystack.git",
+                "reference": "a9a36dbc298f0bd00b9268a684856c3fee513ffd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ericpoe/ophp/zipball/70eb4af4afb8ace669914655e55d748813eb095f",
-                "reference": "70eb4af4afb8ace669914655e55d748813eb095f",
+                "url": "https://api.github.com/repos/ericpoe/haystack/zipball/a9a36dbc298f0bd00b9268a684856c3fee513ffd",
+                "reference": "a9a36dbc298f0bd00b9268a684856c3fee513ffd",
                 "shasum": ""
             },
             "require": {
@@ -30,7 +30,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "OPHP\\": "src"
+                    "Haystack\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -44,8 +44,8 @@
                     "homepage": "http://ericpoe.com"
                 }
             ],
-            "description": "An imagining of PHP as if it were designed around objects.",
-            "time": "2016-02-10 04:38:37"
+            "description": "Forget Haystack vs Needle order, the object *IS* the Haystack.",
+            "time": "2016-02-16 05:01:25"
         }
     ],
     "packages-dev": [
@@ -196,22 +196,24 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "v1.5.0",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "4745ded9307786b730d7a60df5cb5a6c43cf95f7"
+                "reference": "3c91bdf81797d725b14cb62906f9a4ce44235972"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/4745ded9307786b730d7a60df5cb5a6c43cf95f7",
-                "reference": "4745ded9307786b730d7a60df5cb5a6c43cf95f7",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/3c91bdf81797d725b14cb62906f9a4ce44235972",
+                "reference": "3c91bdf81797d725b14cb62906f9a4ce44235972",
                 "shasum": ""
             },
             "require": {
                 "doctrine/instantiator": "^1.0.2",
+                "php": "^5.3|^7.0",
                 "phpdocumentor/reflection-docblock": "~2.0",
-                "sebastian/comparator": "~1.1"
+                "sebastian/comparator": "~1.1",
+                "sebastian/recursion-context": "~1.0"
             },
             "require-dev": {
                 "phpspec/phpspec": "~2.0"
@@ -219,7 +221,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.4.x-dev"
+                    "dev-master": "1.5.x-dev"
                 }
             },
             "autoload": {
@@ -252,7 +254,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2015-08-13 10:07:40"
+            "time": "2016-02-15 07:46:21"
         },
         {
             "name": "phpunit/php-code-coverage",

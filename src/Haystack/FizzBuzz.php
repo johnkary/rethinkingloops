@@ -1,5 +1,5 @@
 <?php
-namespace RethinkingLoops\OPHP;
+namespace RethinkingLoops\Haystack;
 
 use RethinkingLoops\FizzBuzzBase;
 

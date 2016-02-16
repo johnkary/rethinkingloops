@@ -29,7 +29,7 @@ class FizzBuzzTest extends PHPUnit_Framework_TestCase
     {
         return [
             [new RethinkingLoops\Vanilla\FizzBuzz()],
-            [new RethinkingLoops\OPHP\FizzBuzz()],
+            [new RethinkingLoops\Haystack\FizzBuzz()],
         ];
     }
 
