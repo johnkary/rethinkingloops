@@ -1,4 +1,5 @@
 <?php
+
 namespace RethinkingLoops\Haystack;
 
 use RethinkingLoops\FizzBuzzBase;
@@ -9,5 +10,4 @@ class FizzBuzz extends FizzBuzzBase
     {
         // TODO: Implement run() method.
     }
-
 }
