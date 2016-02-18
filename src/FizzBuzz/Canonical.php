@@ -1,16 +1,16 @@
 <?php
 
-namespace RethinkingLoops\Vanilla;
+namespace RethinkingLoops\FizzBuzz;
 
-use RethinkingLoops\FizzBuzzBase;
+use RethinkingLoops\FizzBuzz;
 
 /**
  * Canonical implementation of FizzBuzz kata
  */
-class FizzBuzz extends FizzBuzzBase
+class Canonical implements FizzBuzz
 {
     /**
-     * @return array Array values must be numbers, Fizz, Buzz or FizzBuzz
+     * @return mixed[] Array of numbers, Fizz, Buzz and FizzBuzz
      */
     public function run()
     {

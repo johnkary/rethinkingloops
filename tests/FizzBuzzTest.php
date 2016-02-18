@@ -5,10 +5,10 @@ namespace RethinkingLoops;
 class FizzBuzzTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @dataProvider getFizzBuzzImplementations
-     * @param FizzBuzzBase $program
+     * @dataProvider getPrograms
+     * @param FizzBuzz $program
      */
-    public function testFizzBuzz(FizzBuzzBase $program)
+    public function testFizzBuzz(FizzBuzz $program)
     {
         $fizzBuzz = [
             1, 2, "Fizz", 4, "Buzz", "Fizz", 7, 8, "Fizz", "Buzz",
@@ -26,11 +26,10 @@ class FizzBuzzTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($fizzBuzz, $program->run(), sprintf("%s does not properly implement FizzBuzz", get_class($program)));
     }
 
-    public function getFizzBuzzImplementations()
+    public function getPrograms()
     {
-        return [
-            [new Vanilla\FizzBuzz()],
-            [new Haystack\FizzBuzz()],
-        ];
+        return array_map(function ($class) {
+            return [new $class];
+        }, Util::kataProvider('FizzBuzz'));
     }
 }
