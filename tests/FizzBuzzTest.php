@@ -2,6 +2,8 @@
 
 namespace RethinkingLoops;
 
+use Haystack\HArray;
+
 class FizzBuzzTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -28,8 +30,9 @@ class FizzBuzzTest extends \PHPUnit_Framework_TestCase
 
     public function getPrograms()
     {
-        return array_map(function ($class) {
-            return [new $class];
-        }, Util::kataProvider('FizzBuzz'));
+        return (new HArray(Util::kataProvider('FizzBuzz')))
+            ->map(function ($class) {
+                return [new $class];
+            });
     }
 }
