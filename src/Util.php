@@ -29,8 +29,7 @@ class Util
                 return str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $filepath);
             })
             ->filter(function ($fqcn) {
-                $r = new \ReflectionClass($fqcn);
-                return false === $r->isAbstract();
+                return false === (new \ReflectionClass($fqcn))->isAbstract();
             })
             ->toArray();
     }
