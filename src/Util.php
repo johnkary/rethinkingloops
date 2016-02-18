@@ -24,12 +24,12 @@ class Util
             ->filter(function ($path) {
                 return false === is_dir($path);
             })
-            ->map(function ($path) use ($src, $dir) {
-                $path = str_replace('.php', '', $path);
-                return str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $path);
+            ->map(function ($filepath) use ($src, $dir) {
+                $filepath = str_replace('.php', '', $filepath);
+                return str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $filepath);
             })
-            ->filter(function ($class) {
-                $r = new \ReflectionClass($class);
+            ->filter(function ($fqcn) {
+                $r = new \ReflectionClass($fqcn);
                 return false === $r->isAbstract();
             })
             ->toArray();
