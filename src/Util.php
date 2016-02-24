@@ -13,7 +13,40 @@ class Util
      * @param string $dir
      * @return string[] FQCN of programs implementing the given kata
      */
-    public static function kataProvider($dir)
+    public static function kataProviderProcedural($dir)
+    {
+        $src = realpath(__DIR__ . '/../src/' . $dir);
+        $files = scandir($src);
+
+        $katas = [];
+        foreach ($files as $name) {
+            $path = sprintf('%s/%s', $src, $name);
+            if (is_dir($path)) {
+                continue;
+            }
+
+            $path = str_replace('.php', '', $path);
+            $fqcn = str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $path);
+
+            $ref = new \ReflectionClass($fqcn);
+            if ($ref->isAbstract()) {
+                continue;
+            }
+
+            $katas[] = $fqcn;
+        }
+
+        return $katas;
+    }
+
+    /**
+     * Directory name within `src` to find and create runnable programs for
+     * the given katas.
+     *
+     * @param string $dir
+     * @return string[] FQCN of programs implementing the given kata
+     */
+    public static function kataProviderPipeline($dir)
     {
         $src = realpath(__DIR__ . '/../src/' . $dir);
 

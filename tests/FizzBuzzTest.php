@@ -30,7 +30,7 @@ class FizzBuzzTest extends \PHPUnit_Framework_TestCase
 
     public function getPrograms()
     {
-        return (new HArray(Util::kataProvider('FizzBuzz')))
+        return (new HArray(Util::kataProviderPipeline('FizzBuzz')))
             ->map(function ($class) {
                 return [new $class];
             });

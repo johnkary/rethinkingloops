@@ -4,21 +4,87 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f7ba4edca97d2e5ac3fab140437f9dab",
-    "content-hash": "c1543eeba265b03fb0958f2bc3cde1bf",
+    "hash": "ad9f805462d3d41cb05dcbba8a2bfd55",
+    "content-hash": "6159328a5cd2c0b37a51e310f3b2ba07",
     "packages": [
         {
-            "name": "ericpoe/haystack",
-            "version": "v1.0.0",
+            "name": "doctrine/collections",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ericpoe/haystack.git",
-                "reference": "a9a36dbc298f0bd00b9268a684856c3fee513ffd"
+                "url": "https://github.com/doctrine/collections.git",
+                "reference": "6c1e4eef75f310ea1b3e30945e9f06e652128b8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ericpoe/haystack/zipball/a9a36dbc298f0bd00b9268a684856c3fee513ffd",
-                "reference": "a9a36dbc298f0bd00b9268a684856c3fee513ffd",
+                "url": "https://api.github.com/repos/doctrine/collections/zipball/6c1e4eef75f310ea1b3e30945e9f06e652128b8a",
+                "reference": "6c1e4eef75f310ea1b3e30945e9f06e652128b8a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Common\\Collections\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Roman Borschel",
+                    "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com"
+                },
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com"
+                },
+                {
+                    "name": "Johannes Schmitt",
+                    "email": "schmittjoh@gmail.com"
+                }
+            ],
+            "description": "Collections Abstraction library",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "array",
+                "collections",
+                "iterator"
+            ],
+            "time": "2015-04-14 22:21:58"
+        },
+        {
+            "name": "ericpoe/haystack",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ericpoe/haystack.git",
+                "reference": "a8526dbb4f9abfce1bc404b16409e94ad3860bb9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ericpoe/haystack/zipball/a8526dbb4f9abfce1bc404b16409e94ad3860bb9",
+                "reference": "a8526dbb4f9abfce1bc404b16409e94ad3860bb9",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +111,46 @@
                 }
             ],
             "description": "Forget Haystack vs Needle order, the object *IS* the Haystack.",
-            "time": "2016-02-16 05:01:25"
+            "time": "2016-02-17 04:37:01"
+        },
+        {
+            "name": "mtdowling/transducers",
+            "version": "0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mtdowling/transducers.php.git",
+                "reference": "32ff6a67b5d5d1930533277a505b4f9d360dbe6c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mtdowling/transducers.php/zipball/32ff6a67b5d5d1930533277a505b4f9d360dbe6c",
+                "reference": "32ff6a67b5d5d1930533277a505b4f9d360dbe6c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/transducers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "time": "2015-01-12 21:00:25"
         }
     ],
     "packages-dev": [
