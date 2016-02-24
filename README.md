@@ -8,8 +8,8 @@ implement these kata's without using loops?
 Create a new project based on this project.
 
 ```sh
-$ composer create-project johnkary/rethinkingloops
-$ cd rethinkingloops
+$ composer create-project -s dev johnkary/rethinking-loops
+$ cd rethinking-loops
 ```
 
 Run the unit tests. The failing tests show which katas you have yet to implement:
