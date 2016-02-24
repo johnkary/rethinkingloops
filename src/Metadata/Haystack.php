@@ -18,10 +18,12 @@ class Haystack implements Metadata
     {
         /** @var HArray $keep */
         /** @var HArray $parseErrors */
-        list($keep, $parseErrors) = (new HArray($metadata))
+        $keep = (new HArray($metadata))
             ->map(function ($m) {
                 return explode(':', $m);
-            })
+            });
+        // Workaround until HArray can be extended via https://github.com/ericpoe/haystack/pull/3
+        list ($keep, $parseErrors) = (new HArray($keep))
             ->splitWith(function ($parts) {
                 return count($parts) === 3;
             });
