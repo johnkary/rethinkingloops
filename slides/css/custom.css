@@ -1,0 +1,11 @@
+#license {
+    font-size:0.4em;
+}
+.reveal .no-decoration {
+    border:0;
+    box-shadow:none;
+}
+.reveal .text-align-left {
+    text-align: left;
+}
+

@@ -1,0 +1,1004 @@
+<!doctype html>
+<html lang="en">
+<!--
+    License
+    Rethinking Loops by John Kary <johnkary@gmail.com> is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License. <http://creativecommons.org/licenses/by-sa/4.0/>
+
+    Reveal.js License <https://github.com/hakimel/reveal.js/blob/3.2.0/LICENSE>
+-->
+	<head>
+		<meta charset="utf-8">
+
+		<title>Rethinking Loops</title>
+
+		<meta name="description" content="Rethinking Loops">
+		<meta name="author" content="John Kary">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/simple.css" id="theme">
+		<link rel="stylesheet" href="css/custom.css">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/idea.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<div class="slides">
+				<section>
+					<h1 style="margin-bottom:2rem">Rethinking Loops</h1>
+					<h3 style="margin-bottom:3rem">Lawrence Coders<br>February 24, 2016</h3>
+					<p><small>John Kary</a> &nbsp;•&nbsp; <a href="https://twitter.com/johnkary">@johnkary</a></small></p>
+				</section>
+
+				<section>
+					<h1>Software</h1>
+				</section>
+
+                <section>
+                    <h3>What causes software to stop being soft?<br>Fear of change!</h3>
+                    <ul>
+                        <li>Lack of tests</li>
+                        <li>Fragile code</li>
+                        <li>Career Moves</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h1>Working Memory</h1>
+                </section>
+
+                <section>
+                    <h5>Cognitive Load :(</h5>
+                    <pre><code class="php" data-trim>
+$customFieldValues = $this->getRequestParam("customFieldValues");
+if ($customFieldValues) {
+    foreach ($customFieldValues as $custValueInfo) {
+        $valueEntry = $reservation->getCustomFieldValueEntry($custValueInfo['id']);
+        // Not found, this is the first time they're setting the value, so we need
+        // to create a new entry
+        if (!$valueEntry) {
+            $customField = $resource->getCustomField($custValueInfo['id']);
+            if (!$customField) {
+                throw new \InvalidArgumentException("Attempted to set a custom field that does not belong to the specified Resource");
+            }
+
+            $valueEntry = new ReservationCustomFieldValueEntry();
+            $valueEntry->setField($customField);
+            $reservation->addCustomFieldValue($valueEntry);
+        }
+
+        $valueEntry->setValue($custValueInfo['value']);
+    }
+}
+</code></pre>
+                </section>
+
+				<!-- <section>
+					<h1>Software</h1>
+					<h3>Why is code changed?</h3>
+					<ul>
+						<li>Fix bugs</li>
+						<li>Add new features</li>
+						<li>Improve performance</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Software</h1>
+					<h3>How is code changed?</h3>
+					<ul>
+						<li>Where and how to make the change</li>
+						<li>What implementation details need to change?</li>
+						<li>Other impacts?</li>
+						<li><strong>Write the code change</strong></li>
+						<li>Ensure it works</li>
+						<li>Ensure no regressions</li>
+					</ul>
+				</section> -->
+
+<!-- 				<section>
+					<h3>What vs How</h3>
+					<pre><code class="php" data-trim>
+class UserController {
+    public function updateUser(Request $request) {
+        $this->ensureValidRequest($request);
+        $this->loadUser($request->get('id'));
+        $this->applyRequest($user, $request->getData());
+        return $this->response($user);
+    }
+
+    private function response(User $user) {
+        return json_encode([
+            'user' => [
+                'name' => $user->getName(),
+                'username' => $user->getUsername(),
+                // ...
+            ],
+        ]);
+    }
+}
+</code></pre>
+				</section> -->
+
+                <!-- <section>
+                    <h3>Less Code</h3>
+                    <ul>
+                        <li>Bugs cannot exist in code that doesn't exist</li>
+                        <li>Restrict scope</li>
+                        <li>Fewer local variables</li>
+                        <li>Better tests</li>
+                    </ul>
+                </section> -->
+
+                <section>
+                    <h5>Local variables are noisy</h5>
+                    <pre><code class="php" data-trim>
+$method = $request->getMethod();
+if ($method !== 'POST') {
+    throw new \BadRequestMethod('Endpoint only accepts PUT requests');
+}
+
+$db = $this->getDatabase()->getConnection();
+$roster = $db->query('Roster', $request->get('roster_id'));
+
+// Find oldest student in roster
+$oldest = null;
+foreach ($roster->getStudents() as $student) {
+    if (!$oldest || $student->getAge() > $oldest->getAge()) {
+        $oldest = $student;
+    }
+}
+
+$oldestName = $oldest->getName();
+echo "The oldest student is " . $oldestName . "\n";
+$db->close();
+$roster->updateLastAccess();
+
+// $method, $db, $roster, $request, $oldest, $student, $oldestName
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>Unsetting variables?</h5>
+                    <pre><code class="php" data-trim>
+$method = $request->getMethod();
+if ($method !== 'POST') {
+    throw new \BadRequestMethod('Endpoint only accepts PUT requests');
+}
+unset($method);
+
+$db = $this->getDatabase()->getConnection();
+$roster = $db->query('Roster', $request->get('roster_id'));
+unset($request);
+defer(function () { $db->close(); }); // Golang :)
+</code></pre>
+                </section>
+
+                <section>
+                    <h3>Inline Local Variables</h3>
+                    <pre><code class="php" data-trim>
+$method = $request->getMethod();
+if ($method !== 'POST') {
+    // ...
+}
+
+if ($request->getMethod() !== 'POST') {
+    // ...
+}
+</code></pre>
+                </section>
+
+                <section>
+                    <h3>Local Variables</h3>
+                    <ul>
+                        <li>Weeds in a garden --> detract from beauty</li>
+                        <li>Weeds in a garden --> steal water from flowers</li>
+                        <li>Weed barrier --> functional scope</li>
+                        <li>Seeds, Water, Sunlight --> function inputs</li>
+                        <li>Flowers --> function outputs</li>
+                        <li>Flower Bed/Pot == Scope</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Scope</h3>
+                    <pre><code class="php" data-trim class="stretch">
+$method = $request->getMethod();
+if ($method !== 'POST') {
+    throw new \BadRequestMethod('Endpoint only accepts PUT requests');
+}
+
+function sayHello($name) {
+    // $method is not accessible
+    return 'Hello ' . $name;
+}
+
+sayHello('John');
+echo $name; // "" because it's not available
+</code></pre>
+                </section>
+
+                <section>
+                    <img src="images/functions-in-out.png" class="stretch" style="border:0;box-shadow:none">
+                </section>
+
+                <section>
+                    <h5>Wrapping code in functions</h5>
+                    <pre><code class="php" data-trim>
+$oldest = null;
+foreach ($roster->getStudents() as $student) {
+    if (!$oldest || $student->getAge() > $oldest->getAge()) {
+        $oldest = $student;
+    }
+}
+</code></pre>
+                    <pre><code class="php" data-trim>
+function getOldestStudent(array $students) {
+    $oldest = null;
+    foreach ($students as $student) {
+        if (!$oldest || $student->getAge() > $oldest->getAge()) {
+            $oldest = $student;
+        }
+    }
+
+    return $oldest;
+}
+$oldest = getOldestStudent($roster->getStudents());
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>Defining functions</h5>
+                    <pre><code class="php" data-trim>
+function sayHello($name) { return 'Hello ' . $name; }
+// echo sayHello($name); "Hello John"
+
+class Greeting {
+    public static function sayHello($name) { ... }
+}
+// echo Greeting::sayHello($name);
+
+class User {
+    public function sayHello() { return 'Hello ' . $this->name; }
+}
+// $user = new User('John');
+// echo $user->sayHello();
+
+$sayHello = function ($name) { return 'Hello' . $name; };
+// echo $sayHello('John');
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>array_map</h5>
+                    <pre><code class="php" data-trim>
+$friends = ['John', 'Chris', 'Penelope', 'Megan'];
+$greetings = array_map(function ($name) {
+    return 'Hello ' . $name;
+}, $friends);
+
+// $greetings is...
+// [
+//     'Hello John',
+//     'Hello Chris',
+//     'Hello Penelope',
+//     'Hello Megan',
+// ]
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>array_filter</h5>
+                    <pre><code class="php" data-trim>
+$friends = ['John', 'Chris', 'Penelope', 'Megan'];
+$approved = [];
+foreach ($friends as $friend) {
+    if (strlen($friend) < 6) {
+        $approved[] = $friend;
+    }
+}
+// $approved contains ['John', 'Chris', 'Megan']
+</code></pre>
+                    <pre><code class="php" data-trim>
+$approved = array_filter($friends, function ($name) {
+    return strlen($name) < 6;
+});
+// $approved contains ['John', 'Chris', 'Megan']
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>array_reduce</h5>
+                    <pre><code class="php stretch" data-trim>
+$friends = ['John', 'Chris', 'Penelope', 'Megan'];
+$hello = array_reduce($friends, function ($output, $greeting) {
+    $output .= ', ' . $greeting;
+
+    return $output;
+});
+echo $hello;                  // ", Hello John, Hello Chris, Hello Penelope, Hello Megan"
+echo implode(', ', $friends); // "Hello John, Hello Chris, Hello Penelope, Hello Megan"
+</code></pre>
+                </section>
+
+
+                <section>
+                    <h2>Replacing Loops with array_*</h2>
+                </section>
+
+                <section>
+                    <pre><code class="php" data-trim>
+class Roster {
+    private $students;
+
+    public function __construct(array $students) {
+        $this->students = $students;
+    }
+
+    public function getOldestStudent() {
+        // ...
+    }
+}
+</code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <pre><code class="php" data-trim>
+$students = [
+    new Student('John', 50),
+    new Student('Chris', 25),
+    // ...
+];
+$roster = new Roster($students);
+$roster->getOldestStudent(); // John
+</code></pre>
+                </section>
+
+
+                <section data-transition="none">
+                    <pre><code class="php" data-trim>
+class Roster {
+    public function getOldestStudent() {
+        $oldest = null;
+        foreach ($this->students as $student) {
+            if (!$oldest || $student->getAge() > $oldest->getAge()) {
+                $oldest = $student;
+            }
+        }
+
+        return $oldest;
+    }
+}
+</code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <pre><code class="php" data-trim>
+public function getOldestStudent() {
+    return array_reduce($this->students, function ($oldest, $student) {
+        if ($student->getAge() > $oldest->getAge()) {
+            $oldest = $student;
+        };
+
+        return $oldest;
+    }, reset($this->students));
+}
+</code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <pre><code class="php" data-trim>
+public function getOldestStudent() {
+    return array_reduce($this->students, function ($oldest, $student) {
+        return $student->getAge() > $oldest->getAge() ? $student : $oldest;
+    }, reset($this->students));
+}
+</code></pre>
+                </section>
+
+                <section>
+                    <h2>Pipelines</h2>
+                </section>
+
+                <section>
+                    <h5>Friends Pipelines</h5>
+                    <pre><code class="php" data-trim>
+$friends = ['John', 'Chris', 'Penelope', 'Megan'];
+$shortFriends = array_filter($friends, function ($name) {
+    return strlen($name) < 6;
+});
+
+$greetings = array_map(function ($name) {
+    return 'Hello ' . $name;
+}, $shortFriends);
+
+$hello = array_reduce($greetings, function ($output, $greeting) {
+    $output .= ', ' . $greeting;
+    return $output;
+});
+
+echo $hello; // ", Hello John, Hello Chris, Hello Megan"
+</code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <h5>Pipelines</h5>
+                    <pre><code class="php" data-trim>
+$friends = ['John', 'Chris', 'Penelope', 'Megan'];
+
+echo array_reduce(array_map(function ($name) {
+    return 'Hello ' . $name;
+}, array_filter($friends, function ($name) {
+    return strlen($name) < 6;
+})), function ($output, $greeting) {
+    $output .= ', ' . $greeting;
+    return $output;
+});
+
+// ", Hello John, Hello Chris, Hello Megan"
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>Unix Shell</h5>
+                    <pre><code class="bash" data-trim>
+$ cat friends.txt
+John
+Chris
+Penelope
+Megan
+
+$ cat friends.txt | awk 'length($0)<6'
+John
+Chris
+Megan
+
+$ cat friends.txt | awk 'length($0)<6' | xargs -L1 echo "Hello"
+Hello John
+Hello Chris
+Hello Megan
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>Friends Pipeline</h5>
+                    <pre><code class="bash" data-trim>
+$friends = new \Haystack\HArray(['John', 'Chris', 'Penelope', 'Megan']);
+
+$greetings = $friends->filter(function ($name) {
+    return strlen($name) < 6;
+})
+->map(function ($name) {
+    return 'Hello ' . $name;
+});
+
+echo implode(", ", $greetings->toArray());
+// "Hello John, Hello Chris, Hello Megan"
+</code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <h2>Another Pipeline Refactor</h2>
+                </section>
+
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-src="video/stage0.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-src="video/stage1.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-autoplay data-src="video/stage2.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-autoplay data-src="video/stage3.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-autoplay data-src="video/stage4.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-autoplay data-src="video/stage5.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-autoplay data-src="video/stage6.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-autoplay data-src="video/stage7.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-autoplay data-src="video/stage8.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-autoplay data-src="video/stage9.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-autoplay data-src="video/stage10.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-autoplay data-src="video/stage11.mov" type="video/mp4" />
+                    </video>
+                </section>
+                <section data-transition="none">
+                    <video data-autoplay class="stretch">
+                        <source data-autoplay data-src="video/stage12.mov" type="video/mp4" />
+                    </video>
+                </section>
+
+                <section>
+                    <h2>Libraries</h2>
+                    <ul>
+                        <li><a href="https://laravel.com/docs/5.2/collections">Laravel Collections</a></li>
+                        <li><a href="https://github.com/doctrine/collections">Doctrine Collections</a></li>
+                        <li><a href="https://github.com/ericpoe/haystack">Haystack</a></li>
+                        <li><a href="https://github.com/kapolos/pramda">Pramda</a></li>
+                        <li><a href="http://pipeline.thephpleague.com/">The League: Pipelines</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h5>PHP RFC: Arrow Functions</h5>
+                    <pre><code class="bash" data-trim>
+$elements = [1, 3, 5];
+ 
+// live
+$result = array_map(function($x) {
+    return $x * 2;
+}, $elements);
+ 
+// proposed
+$result = array_map(function($x) => $x * 2, $elements);
+</code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <h5>PHP RFC: Arrow Functions</h5>
+                    <pre><code class="bash" data-trim>
+$friends = new \Haystack\HArray(['John', 'Chris', 'Penelope', 'Megan']);
+
+$greetings = $friends
+    ->filter(function ($name) => strlen($name) < 6)
+    ->map(function ($name) => 'Hello ' . $name);
+
+echo implode(", ", $greetings->toArray());
+// "Hello John, Hello Chris, Hello Megan"
+</code></pre>
+                </section>
+
+                <section>
+                    <img src="images/ci.png" class="stretch" style="border:0;box-shadow:none">
+                </section>
+
+                <section>
+                    <h5>Rethinking Loops Playground</h5>
+                    <pre><code class="bash" data-trim>
+$ composer create-project -s dev johnkary/rethinking-loops
+</code></pre>
+                </section>
+
+                <section>
+                    <h3>Explore</h3>
+                    <ul>
+                        <li><a href="https://github.com/kapolos/pramda">Pramda</a></li>
+                        <li><a href="http://martinfowler.com/articles/collection-pipeline/">Martin Fowler on Pipelines</a></li>
+                        <li><a href="http://www.catb.org/esr/writings/taoup/html/index.html">The Art of Unix Programming</a></li>
+                        <li><a href="https://pragprog.com/book/btlang/seven-languages-in-seven-weeks">Seven Languages in Seven Weeks</a></li>
+                        <li><a href="https://mitpress.mit.edu/sicp/full-text/book/book.html">Structure and Interpretation of Computer Programs (SICP)</a></li>
+                        <li><a href="https://www.youtube.com/watch?v=6mTbuzafcII">Transducers in Clojure by Rich Hickey </a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Questions?</h2>
+                    <p><img src="images/question-box.jpg"></p>
+                    <p><small>John Kary</a> &nbsp;•&nbsp; <a href="https://twitter.com/johnkary">@johnkary</a></small></p>
+                    <p>Slides: <a href="http://johnkary.net/talks">http://johnkary.net/talks</a></p>
+                    <div id="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Rethinking Loops</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://johnkary.net/slides" property="cc:attributionName" rel="cc:attributionURL">John Kary</a> is licensed under a<br><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</div>
+                </section>
+
+
+                <section>
+                    <h1>:)</h1>
+                </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               <!--  <section>
+                    <pre><code class="clojure" data-trim>
+(defn encode
+  [#^InputStream input #^Writer output #^String alphabet line-length]
+  (let [buffer (make-array Byte/TYPE 3)]
+    (loop [line 0]
+      (let [len (.read input buffer)]
+        (when (pos? len)
+          (let [b0 (Integer/valueOf (int (aget buffer 0)))
+                b1 (Integer/valueOf (int (aget buffer 1)))
+                b2 (Integer/valueOf (int (aget buffer 2)))]
+            (cond (= len 3)
+                  (let [s0 (bit-and 0x3F (bit-shift-right b0 2))
+                        s1 (bit-and 0x3F
+                                    (bit-or (bit-shift-left b0 4)
+                                            (bit-shift-right b1 4)))
+                        s2 (bit-and 0x3F
+                                    (bit-or (bit-shift-left b1 2)
+                                            (bit-shift-right b2 6)))
+                        s3 (bit-and 0x3F b2)]
+                    (.append output (.charAt alphabet s0))
+                    (.append output (.charAt alphabet s1))
+                    (.append output (.charAt alphabet s2))
+                    (.append output (.charAt alphabet s3))))))))))
+</code></pre>
+                </section> -->
+
+
+
+				<!-- <section>
+					<pre class="stretch"><code class="php" data-trim>
+// Save custom field data before doing validation check so that this is still updated if the
+// time validation fails
+// todo: check on field validity
+$customFieldValues = $this->getRequestParam("customFieldValues");
+if ($customFieldValues) {
+    foreach ($customFieldValues as $custValueInfo) {
+        $valueEntry = $reservation->getCustomFieldValueEntry($custValueInfo['id']);
+        // Not found, this is the first time they're setting the value, so we need
+        // to create a new entry
+        if (!$valueEntry) {
+            $customField = $resource->getCustomField($custValueInfo['id']);
+            if (!$customField) {
+                throw new \InvalidArgumentException("...");
+            }
+
+            $valueEntry = new ReservationCustomFieldValueEntry();
+            $valueEntry->setField($customField);
+            $reservation->addCustomFieldValue($valueEntry);
+        }
+
+        $valueEntry->setValue($custValueInfo['value']);
+    }
+}
+</code></pre>
+				</section> -->
+
+                
+
+				<section>
+					<h2>Questions?</h2>
+					<p><img src="images/question-box.jpg"></p>
+					<p><small>John Kary</a> &nbsp;•&nbsp; <a href="https://twitter.com/johnkary">@johnkary</a></small></p>
+					<p>Slides: <a href="http://johnkary.net/talks">http://johnkary.net/talks</a></p>
+				</section>
+
+				<!-- <section>
+					<p><strong>your program</strong> <em>n</em>. A maze of non sequiturs littered with clever-clever tricks and irrelevant comments. <em>Compare</em> MY PROGRAM.</p>
+					<p><strong>my program</strong> <em>n</em>. A gem of algoristic precision, offering the most sublime balance between compact, efficient coding on the one hand and fully commented legibility for posterity on the other. Compare YOUR PROGRAM.</p>
+					<p>Stan Kelly-Bootle</p>
+				</section> -->
+
+				<section>
+					<h2>Point of View</h2>
+					<p>
+						Press <strong>ESC</strong> to enter the slide overview.
+					</p>
+					<p>
+						Hold down alt and click on any element to zoom in on it using <a href="http://lab.hakim.se/zoom-js">zoom.js</a>. Alt + click anywhere to zoom back out.
+					</p>
+				</section>
+
+				<section>
+					<h2>Touch Optimized</h2>
+					<p>
+						Presentations look great on touch devices, like mobile phones and tablets. Simply swipe through your slides.
+					</p>
+				</section>
+
+				<section>
+					<section id="fragments">
+						<h2>Fragments</h2>
+						<p>Hit the next arrow...</p>
+						<p class="fragment">... to step through ...</p>
+						<p><span class="fragment">... a</span> <span class="fragment">fragmented</span> <span class="fragment">slide.</span></p>
+
+						<aside class="notes">
+							This slide has fragments which are also stepped through in the notes window.
+						</aside>
+					</section>
+					<section>
+						<h2>Fragment Styles</h2>
+						<p>There's different types of fragments, like:</p>
+						<p class="fragment grow">grow</p>
+						<p class="fragment shrink">shrink</p>
+						<p class="fragment fade-out">fade-out</p>
+						<p class="fragment current-visible">current-visible</p>
+						<p class="fragment highlight-red">highlight-red</p>
+						<p class="fragment highlight-blue">highlight-blue</p>
+					</section>
+				</section>
+
+				<section id="transitions">
+					<h2>Transition Styles</h2>
+					<p>
+						You can select from different transitions, like: <br>
+						<a href="?transition=none#/transitions">None</a> -
+						<a href="?transition=fade#/transitions">Fade</a> -
+						<a href="?transition=slide#/transitions">Slide</a> -
+						<a href="?transition=convex#/transitions">Convex</a> -
+						<a href="?transition=concave#/transitions">Concave</a> -
+						<a href="?transition=zoom#/transitions">Zoom</a>
+					</p>
+				</section>
+
+				<section id="themes">
+					<h2>Themes</h2>
+					<p>
+						reveal.js comes with a few themes built in: <br>
+						<!-- Hacks to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck. -->
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/blood.css'); return false;">Blood</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
+						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
+					</p>
+				</section>
+
+				<section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
+					<h2>Background Transitions</h2>
+					<p>
+						You can override background transitions per-slide.
+					</p>
+					<pre><code class="hljs" style="word-wrap: break-word;">&lt;section data-background-transition="zoom"&gt;</code></pre>
+				</section>
+
+				<section>
+					<h2>Pretty Code</h2>
+					<pre><code class="hljs" data-trim contenteditable>
+function linkify( selector ) {
+  if( supports3DTransforms ) {
+
+    var nodes = document.querySelectorAll( selector );
+
+    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
+      var node = nodes[i];
+
+      if( !node.className ) {
+        node.className += ' roll';
+      }
+    }
+  }
+}
+					</code></pre>
+					<p>Code syntax highlighting courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
+				</section>
+
+				<section>
+					<h2>Marvelous List</h2>
+					<ul>
+						<li>No order here</li>
+						<li>Or here</li>
+						<li>Or here</li>
+						<li>Or here</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Fantastic Ordered List</h2>
+					<ol>
+						<li>One is smaller than...</li>
+						<li>Two is smaller than...</li>
+						<li>Three!</li>
+					</ol>
+				</section>
+
+				<section>
+					<h2>Tabular Tables</h2>
+					<table>
+						<thead>
+							<tr>
+								<th>Item</th>
+								<th>Value</th>
+								<th>Quantity</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Apples</td>
+								<td>$1</td>
+								<td>7</td>
+							</tr>
+							<tr>
+								<td>Lemonade</td>
+								<td>$2</td>
+								<td>18</td>
+							</tr>
+							<tr>
+								<td>Bread</td>
+								<td>$3</td>
+								<td>2</td>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+
+				<section>
+					<h2>Clever Quotes</h2>
+					<p>
+						These guys come in two forms, inline: <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
+						&ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q> and block:
+					</p>
+					<blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
+						&ldquo;For years there has been a theory that millions of monkeys typing at random on millions of typewriters would
+						reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.&rdquo;
+					</blockquote>
+				</section>
+
+				<section>
+					<h2>Intergalactic Interconnections</h2>
+					<p>
+						You can link between slides internally,
+						<a href="#/2/3">like this</a>.
+					</p>
+				</section>
+
+				<section>
+					<h2>Speaker View</h2>
+					<p>There's a <a href="https://github.com/hakimel/reveal.js#speaker-notes">speaker view</a>. It includes a timer, preview of the upcoming slide as well as your speaker notes.</p>
+					<p>Press the <em>S</em> key to try it out.</p>
+
+					<aside class="notes">
+						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
+					</aside>
+				</section>
+
+				<section>
+					<h2>Export to PDF</h2>
+					<p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, here's an example:</p>
+					<iframe src="https://www.slideshare.net/slideshow/embed_code/42840540" width="445" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:3px solid #666; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
+				</section>
+
+				<section>
+					<h2>Global State</h2>
+					<p>
+						Set <code>data-state="something"</code> on a slide and <code>"something"</code>
+						will be added as a class to the document element when the slide is open. This lets you
+						apply broader style changes, like switching the page background.
+					</p>
+				</section>
+
+				<section data-state="customevent">
+					<h2>State Events</h2>
+					<p>
+						Additionally custom events can be triggered on a per slide basis by binding to the <code>data-state</code> name.
+					</p>
+					<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
+Reveal.addEventListener( 'customevent', function() {
+	console.log( '"customevent" has fired' );
+} );
+					</code></pre>
+				</section>
+
+				<section>
+					<h2>Take a Moment</h2>
+					<p>
+						Press B or . on your keyboard to pause the presentation. This is helpful when you're on stage and want to take distracting slides off the screen.
+					</p>
+				</section>
+
+				<section>
+					<h2>Much more</h2>
+					<ul>
+						<li>Right-to-left support</li>
+						<li><a href="https://github.com/hakimel/reveal.js#api">Extensive JavaScript API</a></li>
+						<li><a href="https://github.com/hakimel/reveal.js#auto-sliding">Auto-progression</a></li>
+						<li><a href="https://github.com/hakimel/reveal.js#parallax-background">Parallax backgrounds</a></li>
+						<li><a href="https://github.com/hakimel/reveal.js#keyboard-bindings">Custom keyboard bindings</a></li>
+					</ul>
+				</section>
+
+				<section style="text-align: left;">
+					<h1>THE END</h1>
+					<p>
+						- <a href="http://slides.com">Try the online editor</a> <br>
+						- <a href="https://github.com/hakimel/reveal.js">Source code &amp; documentation</a>
+					</p>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: false,
+				history: true,
+				center: true,
+				// width: 1024,
+			    // height: 768,
+                margin: 0,
+                // minScale: 1.2,
+                // maxScale: 1.2,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
