@@ -13,9 +13,10 @@
   ],
   "require": {
     "php": ">=5.6.0",
-    "ericpoe/haystack": "^1.0.0",
+    "ericpoe/haystack": "^1.0.2",
     "doctrine/collections": "^1.3",
-    "mtdowling/transducers": "^0.3.0"
+    "mtdowling/transducers": "^0.3.0",
+    "kapolos/pramda": "0.9.0.x-dev"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.2"
