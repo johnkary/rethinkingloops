@@ -1,3 +1,13 @@
+.reveal sub {
+    font-size:0.5em;
+}
+.reveal .no-border {
+    border:0;
+    box-shadow:none;
+}
+.red {
+    color:red;
+}
 #license {
     font-size:0.4em;
 }
@@ -9,3 +19,27 @@
     text-align: left;
 }
 
+.reveal .apply-function-visual td {
+    padding: 1.2em 1.5em 1.2em 1.5em;
+}
+.reveal .apply-function-visual th {
+    text-align: center;
+    font-weight: normal;
+}
+
+.variable-list {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.variable-list li {
+    list-style: none;
+    padding-left: 1em;
+    text-indent: -1em;
+}
+/*
+.variable-list li:before {
+    content: "$";
+    padding-right: 5px;
+}*/
