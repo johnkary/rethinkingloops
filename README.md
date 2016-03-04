@@ -12,6 +12,15 @@ $ composer create-project -s dev johnkary/rethinking-loops
 $ cd rethinking-loops
 ```
 
+## Viewing Slides
+
+```sh
+$ php -S 127.0.0.1:4000 -t slides/
+$ open http://127.0.0.1:4000
+```
+
+## Writing Katas
+
 Run the unit tests. The failing tests show which katas you have yet to implement:
 
 ```sh
