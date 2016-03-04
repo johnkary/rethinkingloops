@@ -1,22 +1,27 @@
 # Rethinking Loops
 
-Playground for ideas presented in "Rethinking Loops" by John Kary. Can you
-implement these kata's without using loops?
-
-## Install
-
-Create a new project based on this project.
-
-```sh
-$ composer create-project -s dev johnkary/rethinking-loops
-$ cd rethinking-loops
-```
+Playground for ideas presented in John Kary's talk [Rethinking
+Loops](http://johnkary.net/talks/#rethinking-loops).
+Can you implement these kata's without using loops? Without control
+statements?
 
 ## Viewing Slides
 
 ```sh
+$ git clone https://github.com/johnkary/rethinkingloops.git rethinkingloops
+$ cd !$
 $ php -S 127.0.0.1:4000 -t slides/
 $ open http://127.0.0.1:4000
+```
+
+## Install for working on katas
+
+Create a new project based on this project using
+[Composer](https://getcomposer.org/).
+
+```sh
+$ composer create-project -s dev johnkary/rethinking-loops
+$ cd rethinking-loops
 ```
 
 ## Writing Katas
