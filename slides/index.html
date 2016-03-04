@@ -51,6 +51,18 @@
 				</section>
 
                 <section>
+                    <img src="images/kcpug.png" class="no-border">
+                </section>
+
+                <!--
+                we're going to look at a lot of code today. the catch is really bad code
+                that benefits the most from the techniques I'll talk about today is hard to show
+                on slides because that bad code is long and hard to follow. 
+                I hope looking at "simple" bad code examples you can recognize these bad
+                coding patterns in the code you work with.
+            -->
+
+                <section>
                     <h3>FizzBuzz</h3>
                     <p class="fragment" style="text-align:left">
                         Print numbers from 1 to 100, but...<br>
@@ -114,10 +126,10 @@ foreach (range(1,100) as $num) {
                 <section>
                     <pre><code class="php" data-trim>
 $max = 100;
-$all = range(0, $max);
-$threes = array_fill_keys(range(3, $max, 3), 'Fizz');
-$fives = array_fill_keys(range(5, $max, 5), 'Buzz');
-$fifteens = array_fill_keys(range(15, $max, 15), 'FizzBuzz');
+$all = range(1, $max);
+$threes = array_fill_keys(range(3, $max, 3), 'Fizz'); // [3 => 'Fizz', 6 => 'Fizz']
+$fives = array_fill_keys(range(5, $max, 5), 'Buzz');  // [5 => 'Buzz', 5 => 'Buzz']
+$fifteens = array_fill_keys(range(15, $max, 15), 'FizzBuzz'); // [15 => 'FizzBuzz']
 
 echo join("\n", array_replace($all, $threes, $fives, $fifteens));
 </code></pre>
@@ -198,53 +210,105 @@ $end = array_reduce($start, function ($total, $i) {
 </code></pre>
                 </section>
 
+                <section data-transition="none">
+                    <h3>Expressiveness</h3>
+                </section>
+
+                <section data-transition="none">
+                    <h5>Cool</h5>
+
+                    <ul>
+                        <li class="fragment">Chess is <span class="red">cool</span></li>
+                        <li class="fragment">Roller coasters are <span class="red">cool</span></li>
+                        <li class="fragment">Playing chess on a roller coaster is <span class="red">cool</span></li>
+                    </ul>
+                </section>
+
+                <section data-transition="none">
+                    <img src="images/chess-roller-coaster.png" style="max-width:41%;" class="no-border">
+                </section>
+
+                <section data-transition="none">
+                    <h5>Cool</h5>
+
+                    <ul>
+                        <li class="fragment">Chess is <span class="red">contemplative</span></li>
+                        <li class="fragment">Roller coasters are <span class="red">thrilling</span></li>
+                        <li class="fragment">Playing chess on a roller coaster is <span class="red">connivingly rebellious</span></li>
+                    </ul>
+                </section>
+
+                <section data-transition="none">
+                    <h3>Expressive Code</h3>
+                </section>
+
                 <section>
-                    <h5>array ==> map ==> map ==> filter ==> reduce</h5>
-                    <pre style="width:80%"><code class="php stretch" data-trim>
-array_map($fn, $array, [$...])
-array_filter($array, $fn)
-array_reduce($array, $fn, $initial)
-</code></pre>
-                    <pre style="width:80%" class="fragment"><code class="php stretch" data-trim>
-// 1. Multiply by 2
-// 2. Remove any results over 9
-// 3. Add numbers together
-
+                    <h5>array_map</h5>
+<pre><code class="php" data-trim>
 $start = [1, 2, 3, 4, 5];
+$end = [];
 
-echo array_reduce(array_filter(array_map(function ($i) {
+for ($i=0; $i < count($start); $i++) {
+    $current = $start[$i];
+    $end[] = $current * 2;
+}
+
+// $end [2, 4, 6, 8, 10]
+</code></pre>
+<pre class="fragment"><code class="php" data-trim>
+$start = [1, 2, 3, 4, 5];
+$end = array_map(function ($i) {
     return $i * 2;
-}, $start), function ($i) {
-    return $i < 9;
-}), function ($sum, $i) {
-    return $sum + $i;
-}, 0);
+}, $start);
 
-// 20
+// $end [2, 4, 6, 8, 10]
 </code></pre>
                 </section>
 
                 <section>
-                    <h5>Pipelines</h5>
-                    <pre style="width:80%"><code class="php stretch" data-trim>
-// 1. Multiply by 2
-// 2. Remove any results over 9
-// 3. Add numbers together
+                    <h5>array_filter</h5>
+<pre><code class="php" data-trim>
+$start = [1, 2, 3, 4, 5, 6];
+$even = [];
 
+foreach ($start as $i) {
+    if ($i % 2 === 0) {
+        $even[] = $i;
+    }
+}
+
+// $even [2, 4, 6]
+</code></pre>
+<pre class="fragment"><code class="php" data-trim>
+$start = [1, 2, 3, 4, 5, 6];
+$even = array_filter($start, function ($i) {
+    return $i %2 === 0;
+});
+
+// $even [2, 4, 6]
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>array_reduce</h5>
+                    <pre><code class="php stretch" data-trim>
 $start = [1, 2, 3, 4, 5];
+$end = 0;
 
-echo (new \Haystack\HArray($start))
-    ->map(function ($i) {
-        return $i * 2;
-    })
-    ->filter(function ($i) {
-        return $i < 9;
-    })
-    ->reduce(function ($sum, $i) {
-        return $sum + $i;
-    });
+foreach ($start as $s) {
+    $end = $end + $s;
+}
 
-// 20
+// $end === 15
+</code></pre>
+<pre class="fragment"><code class="php stretch" data-trim>
+$start = [1, 2, 3, 4, 5];
+$end = array_reduce($start, function ($end, $i) {
+    return $end += $i;
+}, 0);
+
+// $end === 15
+// $end = array_sum($start);
 </code></pre>
                 </section>
 
@@ -279,7 +343,7 @@ echo (new \Haystack\HArray($start))
                 </section>
 
                 <section>
-                    <h5>Defining functions</h5>
+                    <h5>Defining a global function</h5>
                     <pre><code class="php" data-trim>
 function sayHello($name) {
     return 'Hello ' . $name;
@@ -290,27 +354,50 @@ echo sayHello("John"); // "Hello John"
                 </section>
 
                 <section>
-                    <h5>Defining functions</h5>
+                    <h5>Defining a static function</h5>
                     <pre><code class="php" data-trim>
-function sayHello($name) { return 'Hello ' . $name; }
-// echo sayHello($name); "Hello John"
-
-class Greeting {
-    public static function sayHello($name) { ... }
-}
-// echo Greeting::sayHello($name);
-
 class User {
-    public function sayHello() { return 'Hello ' . $this->name; }
+    public static function sayHello($name) {
+        return 'Hello ' . $name;
+    }
 }
-// $user = new User('John');
-// echo $user->sayHello();
 
-$sayHello = function ($name) { return 'Hello' . $name; };
-// echo $sayHello('John');
+echo User::sayHello("John"); // "Hello John"
 </code></pre>
                 </section>
 
+                <section>
+                    <h5>Defining an object method</h5>
+                    <pre><code class="php" data-trim>
+class User {
+    private $name;
+
+    public function __construct($name) {
+        $this->name = $name;
+    }
+
+    public function sayHello() {
+        return 'Hello ' . $this->name;
+    }
+}
+
+$user = new User("John");
+echo $user->sayHello();  // "Hello John"
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>Defining anonymous functions</h5>
+                    <pre><code class="php" data-trim>
+$sayHello = function ($name) {
+    return 'Hello ' . $name;
+};
+
+echo $sayHello('John'); // "Hello John"
+</code></pre>
+                </section>
+
+<!--
                 <section>
                     <h5>Wrapping code in functions</h5>
                     <pre><code class="php" data-trim>
@@ -335,8 +422,9 @@ function getOldestStudent(array $students) {
 $oldest = getOldestStudent($roster->getStudents());
 </code></pre>
                 </section>
+-->
 
-                <section data-transition="none">
+                <section>
                     <h3>Scope</h3>
                     <!--
                     Variables outside function are not accessible inside
@@ -349,7 +437,7 @@ sayHello('John');
 
 function sayHello($name) {
     return 'Hello ' . $name . ' via ' . $method;
-    // Fatal error
+    // PHP Notice:  Undefined variable: method
 }
 </code></pre>
                 </section>
@@ -370,6 +458,20 @@ function sayHello($name) {
                 </section>
 
                 <section data-transition="none">
+                    <h3>Scope</h3>
+                    <!-- One way is to pass these values in -->
+                    <pre><code class="php" data-trim class="stretch">
+$method = "GET";
+
+function sayHello($name, $verb) {
+    return sprintf('Hello %s via %s', $name, $verb);
+}
+
+echo sayHello('John', $method); // "Hello John via GET"
+</code></pre>
+                </section>
+
+                <section data-transition="none">
                     <!-- Variables inside functions are not accessible outside -->
                     <h3>Scope</h3>
                     <pre><code class="php" data-trim class="stretch">
@@ -381,20 +483,6 @@ sayHello('John'); // "Hello John"
 echo $name;
 // `PHP Notice: Undefined variable: name ...`
 // because $name is not accessible in enclosing scope
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <h3>Scope</h3>
-                    <!-- One way is to pass these values in -->
-                    <pre><code class="php" data-trim class="stretch">
-$method = "GET";
-
-function sayHello($name, $verb) {
-    return sprintf('Hello %s via %s', $name, $verb);
-}
-
-echo sayHello('John', $method); // "Hello John via GET"
 </code></pre>
                 </section>
 
@@ -421,10 +509,82 @@ echo $greeting('John'); // "Hello John via GET"
                 </section>
 
                 <section>
+                    <pre><code class="php" data-trim>
+for ($i = 0, $for_max = count($cached_inserts); $i < $for_max; $i++) {
+    if ($smarty->debugging) {
+        $_params = array();
+        require_once(SMARTY_CORE_DIR . 'core.get_microtime.php');
+    }
+    $args = unserialize($insert_args[$i]); $name = $args['name'];
+
+    if (isset($args['script'])) {
+        if(!smarty_core_get_php_resource($_params, $smarty)) {
+            return false;
+        }
+        $php_resource = $_params['php_resource'];
+
+        if ($resource_type == 'file') {
+            $smarty->_include($php_resource, true);
+        } else {
+            $smarty->_eval($php_resource);
+        }
+    }
+
+    $params['results'] = substr_replace($params['results'], $replace, strpos($params['results'], $cached_inserts[$i]), strlen($cached_inserts[$i]));
+    if ($smarty->debugging) {
+        $_params = array();
+        require_once(SMARTY_CORE_DIR . 'core.get_microtime.php');
+        $smarty->_smarty_debug_info[] = array('type'      => 'insert',
+                                              'exec_time' => smarty_core_get_microtime($_params, $smarty) - $debug_start_time);
+    }
+}
+
+return $params['results'];
+</code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <pre><span style="color: transparent; text-shadow: rgba(0, 0, 0, 0.95) 0px 0px 10px;">for ($i = 0, $for_max = count($cached_inserts); $i < $for_max; $i++) {
+function doComplicatedThing() {
+    for ($i = 0, $for_max = count($cached_inserts); $i < $for_max; $i++) {
+        if ($smarty->debugging) {
+            $_params = array();
+            require_once(SMARTY_CORE_DIR . 'core.get_microtime.php');
+        }
+        $args = unserialize($insert_args[$i]); $name = $args['name'];
+
+        if (isset($args['script'])) {
+            if(!smarty_core_get_php_resource($_params, $smarty)) {
+                return false;
+            }
+            $php_resource = $_params['php_resource'];
+
+            if ($resource_type == 'file') {
+                $smarty->_include($php_resource, true);
+            } else {
+                $smarty->_eval($php_resource);
+            }
+        }
+
+        $params['results'] = substr_replace($params['results'], $replace, strpos($params['results'], $cached_inserts[$i]), strlen($cached_inserts[$i]));
+        if ($smarty->debugging) {
+            $_params = array();
+            require_once(SMARTY_CORE_DIR . 'core.get_microtime.php');
+            $smarty->_smarty_debug_info[] = array('type'      => 'insert',
+                                                  'exec_time' => smarty_core_get_microtime($_params, $smarty) - $debug_start_time);
+        }
+    }
+
+    return $params['results'];
+}
+</span></pre>
+                </section>
+
+                <section>
                 <!--
                     controlling what goes in and what comes out
                     is clear what is required to use this method properly
-                    and what it will give back
+                    and what it will return
                 -->
                     <h3>Working Memory</h3>
                 </section>
@@ -436,8 +596,8 @@ echo $greeting('John'); // "Hello John via GET"
                         <li class="fragment">Gina feeds each dog a strip of bacon
                             <ul class="fragment"><li>except Spackle because he pooped on the floor earlier</li></ul></li>
                         <li class="fragment">Spot wags her tail looking at you then rolls over</li>
-                        <li class="fragment">You're hungry and eat 2 strip of bacon from the oven set at 400°F</li>
-                        <li class="fragment">Gina hands you more bacon and you drop it because it's too hot
+                        <li class="fragment">You're hungry and eat 2 strips of bacon from the oven set at 400°F</li>
+                        <li class="fragment">Gina hands you fresh bacon and you drop it because it's too hot
                             <ul>
                                 <li class="fragment">5 pieces fall to the ground</li>
                                 <li class="fragment">No more bacon</li>
@@ -455,7 +615,7 @@ echo $greeting('John'); // "Hello John via GET"
                         <li>Gina feeds <span class="fragment fade-out visible">each dog</span> <span class="fragment">2 dogs</span> a strip of bacon
                             <ul class="fragment fade-out visible"><li>except Spackle because he pooped on the floor earlier</li></ul></li>
                         <li class="fragment fade-out visible">Spot wags her tail looking at you then rolls over</li>
-                        <li>You<span class="class="fragment fade-out visible"">'re hungry and</span> eat 2 strip of bacon<span class="fragment fade-out visible"> from the oven set at 400°F</span></li>
+                        <li>You<span class="class="fragment fade-out visible"">'re hungry and</span> eat 2 strips of bacon<span class="fragment fade-out visible"> from the oven set at 400°F</span></li>
                         <li>Gina hands you more bacon and you drop <span class="fragment fade-out visible">it because it's too hot</span>
                             <ul>
                                 <li>5 pieces <span class="fragment fade-out visible">fall to the ground</span></li>
@@ -510,76 +670,6 @@ if ($customFieldValues) {
                 </section>
 
                 <section>
-                    <h3>Squint Test</h3>
-                    <pre><code class="php" data-trim>
-for ($i = 0, $for_max = count($cached_inserts); $i < $for_max; $i++) {
-    if ($smarty->debugging) {
-        $_params = array();
-        require_once(SMARTY_CORE_DIR . 'core.get_microtime.php');
-    }
-    $args = unserialize($insert_args[$i]); $name = $args['name'];
-
-    if (isset($args['script'])) {
-        if(!smarty_core_get_php_resource($_params, $smarty)) {
-            return false;
-        }
-        $php_resource = $_params['php_resource'];
-
-        if ($resource_type == 'file') {
-            $smarty->_include($php_resource, true);
-        } else {
-            $smarty->_eval($php_resource);
-        }
-    }
-
-    $params['results'] = substr_replace($params['results'], $replace, strpos($params['results'], $cached_inserts[$i]), strlen($cached_inserts[$i]));
-    if ($smarty->debugging) {
-        $_params = array();
-        require_once(SMARTY_CORE_DIR . 'core.get_microtime.php');
-        $smarty->_smarty_debug_info[] = array('type'      => 'insert',
-                                              'exec_time' => smarty_core_get_microtime($_params, $smarty) - $debug_start_time);
-    }
-}
-
-return $params['results'];
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <pre><span style="color: transparent; text-shadow: rgba(0, 0, 0, 0.95) 0px 0px 10px;">for ($i = 0, $for_max = count($cached_inserts); $i < $for_max; $i++) {
-    if ($smarty->debugging) {
-        $_params = array();
-        require_once(SMARTY_CORE_DIR . 'core.get_microtime.php');
-    }
-    $args = unserialize($insert_args[$i]); $name = $args['name'];
-
-    if (isset($args['script'])) {
-        if(!smarty_core_get_php_resource($_params, $smarty)) {
-            return false;
-        }
-        $php_resource = $_params['php_resource'];
-
-        if ($resource_type == 'file') {
-            $smarty->_include($php_resource, true);
-        } else {
-            $smarty->_eval($php_resource);
-        }
-    }
-
-    $params['results'] = substr_replace($params['results'], $replace, strpos($params['results'], $cached_inserts[$i]), strlen($cached_inserts[$i]));
-    if ($smarty->debugging) {
-        $_params = array();
-        require_once(SMARTY_CORE_DIR . 'core.get_microtime.php');
-        $smarty->_smarty_debug_info[] = array('type'      => 'insert',
-                                            'exec_time' => smarty_core_get_microtime($_params, $smarty) - $debug_start_time);
-    }
-}
-
-return $params['results'];
-</span></pre>
-                </section>
-
-                <section>
                     <h5>Local variables are noisy</h5>
                     <!--
                     Some literature encourages extracting variables for "readability"
@@ -615,38 +705,6 @@ public function getOldestStudentAction(Request $request) {
     // $method, $db, $roster, $request, $oldest, $student, $oldestName
 }
 </code></pre>
-                </section>
-
-                <section>
-                    <h3>Ruthlessly Eliminate Local Variables</h3>
-                    <!-- Readable, Reasonable -->
-                    <pre><code class="php" data-trim>
-$method = $request->getMethod();
-if ($method !== 'POST') {
-    // ...
-}
-</code></pre>
-                    <pre><code class="php" data-trim>
-if ($request->getMethod() !== 'POST') {
-    // ...
-}
-</code></pre>
-                </section>
-
-                <section>
-                    <h3>Chain Method Calls</h3>
-                    <!-- Readable, Reasonable -->
-                    <pre><code class="php" data-trim>
-$db = $this->getDatabase()->getConnection();
-$roster = $db->query('Roster', $request->get('roster_id'));
-</code></pre>
-                    <pre><code class="php" data-trim>
-$roster = $this
-    ->getDatabase()
-    ->getConnection()
-    ->query('Roster', $request->get('roster_id'));
-</code></pre>
-                    <!-- Yes, dependency injection is a thing but it's another topic -->
                 </section>
 
                 <section data-transition="none">
@@ -723,9 +781,230 @@ foreach (...) {
                     <!-- what if instead of control structures we used functions? -->
                 </section>
 
-                <section data-transition="none">
+                <section>
+                    <h3>Ruthlessly Eliminate Local Variables</h3>
+                    <!-- Readable, Reasonable -->
                     <pre><code class="php" data-trim>
+$method = $request->getMethod();
+if ($method !== 'POST') {
+    // ...
+}
+</code></pre>
+                    <pre><code class="php" data-trim>
+if ($request->getMethod() !== 'POST') {
+    // ...
+}
+</code></pre>
+                </section>
+
+                <section>
+                    <h3>Chain Method Calls</h3>
+                    <!-- Readable, Reasonable -->
+                    <pre><code class="php" data-trim>
+$db = $this->getDatabase();
+$conn = $db->getConnection();
+$roster = $conn->query('Roster', $request->get('roster_id'));
+</code></pre>
+                    <pre><code class="php" data-trim>
+$roster = $this
+    ->getDatabase()
+    ->getConnection()
+    ->query('Roster', $request->get('roster_id'));
+</code></pre>
+                    <!-- Yes, dependency injection is a thing but it's another topic -->
+                </section>
+
+                <section>
+                    <h5>array ==> map ==> map ==> filter ==> reduce</h5>
+                    <pre style="width:80%" class="fragment"><code class="php stretch" data-trim>
+// 1. Multiply by 2
+// 2. Remove any results over 9
+// 3. Add numbers together
+
+$start = [1, 2, 3, 4, 5];
+
+echo array_reduce(array_filter(array_map(function ($i) {
+    return $i * 2;
+}, $start), function ($i) {
+    return $i < 9;
+}), function ($sum, $i) {
+    return $sum + $i;
+}, 0);
+
+// 20
+</code></pre>
+<pre style="width:80%" class="fragment"><code class="php stretch" data-trim>
+array_map($fn, $array, [$...])
+array_filter($array, $fn)
+array_reduce($array, $fn, $initial)
+</code></pre>
+                </section>
+
+                <section>
+<pre><code class="php" data-trim>
+$friends = ['John', 'Chris', 'Penelope', 'Megan'];
+
+$result = join(", ", addGreeting(keepUnderLength(6, $friends)));
+
+echo $result; // "Hello John, Hello Chris, Hello Megan"
+</code></pre>
+<pre class="fragment"><code class="php" data-trim>
+$friends = ['John', 'Chris', 'Penelope', 'Megan'];
+
+$short = keepUnderLength(6, $friends);
+$greeted = addGreeting($short);
+$result = join(", ", $greeted);
+
+echo $result; // "Hello John, Hello Chris, Hello Megan"
+</code></pre>
+                <!--
+                where have we seen this?
+                wouldn't it be great if we could pass output as input to the next function?
+            -->
+                </section>
+
+                <section>
+                    <h5>Unix Pipes</h5>
+                    <pre><code class="bash" data-trim>
+$ cat friends.txt
+John
+Chris
+Penelope
+Megan
+</code></pre>
+                    <pre class="fragment"><code class="bash" data-trim>
+$ cat friends.txt | awk 'length($0) < 6'
+John
+Chris
+Megan
+</code></pre>
+                    <pre class="fragment"><code class="bash" data-trim>
+$ cat friends.txt | awk 'length($0) < 6' | xargs -L1 echo "Hello"
+Hello John
+Hello Chris
+Hello Megan
+</code></pre>
+<!--
+    English reads left to right, top to bottom
+    Each program is small, self-contained and can't interfere with the other
+-->
+                </section>
+
+                <section>
+                    <h5>Pipelines</h5>
+                    <pre><code class="php" data-trim>
+$friends = new \Haystack\HArray(['John', 'Chris', 'Penelope', 'Megan']);
+$greetings = $friends->filter(...)->map(...)->toArray();
+
+// ["Hello John", "Hello Chris", "Hello Megan"]
+</code></pre>
+                    <pre class="fragment"><code class="php" data-trim>
+class HArray extends \ArrayObject
+{
+    private $array = [];
+    public function __construct(array $a = []) {
+        $this->array = $a;
+    }
+    public function map(callable $func) {
+        return new HArray(array_map($func, $this->array));
+    }
+    public function filter(callable $func = null) {
+        return new HArray(array_filter($this->array, $func));
+    }
+    public function reduce(callable $func, $initial = null) {
+        return array_reduce($this->array, $func, $initial);
+    }
+}
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>Pipelines</h5>
+                    <pre><code class="php" data-trim>
+$friends = new \Haystack\HArray(['John', 'Chris', 'Penelope', 'Megan']);
+$greetings = $friends
+    ->filter(...)
+    ->filter(...)
+    ->map(...)
+    ->reduce(...)
+    ->toArray();
+
+return $greetings;
+</code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <h5>Pipelines</h5>
+                    <pre><code class="php" data-trim>
+$friends = new \Haystack\HArray(['John', 'Chris', 'Penelope', 'Megan']);
+$greetings = $friends
+    ->filter(function ($name) {
+        return ...
+    })
+    ->filter(function ($name) {
+        return ...
+    })
+    ->map(function ($name) {
+        return ...
+    })
+    ->reduce(function ($name) {
+        return ...
+    })
+    ->toArray();
+
+return $greetings;
+</code></pre>
+                </section>
+
+                <section>
+                    <h3>Path to Completion</h3>
+                </section>
+
+                <section>
+                    <h3><a href="http://www.lukew.com/resources/web_form_design.asp">Web Form Design: Filling in the Blanks</a></h3>
+                    <h5>Luke Wroblewski</h5>
+                    <img src="images/web-forms-cover.png" style="width:40%" class="no-border">
+                </section>
+
+                <section>
+                    <img src="images/path-to-completion-broken.png" class="stretch no-border">
+                    <!-- http://static.lukew.com/webforms_lukew.pdf -->
+                </section>
+
+                <section data-transition="none">
+                    <img src="images/path-to-completion-happy.png" class="stretch no-border">
+                    <!-- http://static.lukew.com/webforms_lukew.pdf -->
+                </section>
+
+                <section>
+                    <h5>Pipelines</h5>
+                    <pre style="width:80%"><code class="php stretch" data-trim>
+// 1. Multiply by 2
+// 2. Remove any results over 9
+// 3. Add numbers together
+
+$start = [1, 2, 3, 4, 5];
+
+echo (new \Haystack\HArray($start))
+    ->map(function ($i) {
+        return $i * 2;
+    })
+    ->filter(function ($i) {
+        return $i < 9;
+    })
+    ->reduce(function ($sum, $i) {
+        return $sum + $i;
+    });
+
+// 20
+</code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <h5>Refactor to Pipelines</h5>
+                    <pre class="fragment"><code class="php" data-trim>
 $names = ['John', 'Mary', 'Jessica', 'Darren'];
+
 for ($i=0; $i < strlen($names); $i++) {
     $name = $names[$i];
     if (strlen($name) < 5) {
@@ -736,8 +1015,10 @@ for ($i=0; $i < strlen($names); $i++) {
                 </section>
 
                 <section data-transition="none">
+                    <h5>Refactor to Pipelines</h5>
                     <pre><code class="php" data-trim>
 $names = ['John', 'Mary', 'Jessica', 'Darren'];
+
 foreach ($names as $name) {
     if (strlen($name) < 5) {
         echo 'Hi ' . $name . "\n";
@@ -747,136 +1028,76 @@ foreach ($names as $name) {
                 </section>
 
                 <section data-transition="none">
+                    <h5>Refactor to Pipelines</h5>
                     <pre><code class="php" data-trim>
 $names = ['John', 'Mary', 'Jessica', 'Darren'];
+
 $short = array_filter($names, function ($name) {
     return strlen($name) < 5;
 });
+
 $greetings = array_map(function ($name) {
     return 'Hi ' . $name;
 }, $short);
+
 echo join("\n", $greetings);
+// "Hello John, Hello Mary, Hello Darren"
 </code></pre>
-                <!--
-                I'm sure you're like LOL JOHN this is a ton more code! Whatever man I'm out.
-                We've got a classic needle/haystack, haystack/needle case too. 
-            -->
                 </section>
 
                 <section data-transition="none">
+                    <h5>Refactor to Pipelines</h5>
                     <pre><code class="php" data-trim>
-$names = ['John', 'Mary', 'Jessica', 'Darren'];
-$greetings = (new \Haystack\HArray($names))
+$names = new \Haystack\HArray(['John', 'Mary', 'Jessica', 'Darren']);
+
+$short = $names->filter(function ($name) {
+    return strlen($name) < 5;
+});
+
+$greetings = $short->map(function ($name) {
+    return 'Hi ' . $name;
+}, $short);
+
+echo join("\n", $greetings->toArray());
+// "Hello John, Hello Mary, Hello Darren"
+</code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <h5>Refactor to Pipelines</h5>
+                    <pre><code class="php" data-trim>
+$names = new \Haystack\HArray(['John', 'Mary', 'Jessica', 'Darren']);
+$greetings = $names
     ->filter(function ($name) {
         return strlen($name) < 5;
     })
     ->map(function ($name) {
         return 'Hi ' . $name;
     });
+
 echo join("\n", $greetings->toArray());
+// "Hello John, Hello Mary, Hello Darren"
 </code></pre>
                 <!-- This is a little more condensed. -->
                 </section>
 
                 <section data-transition="none">
+                    <h5>Refactor to Pipelines</h5>
                     <pre><code class="php" data-trim>
-$names = ['John', 'Mary', 'Jessica', 'Darren'];
-$greetings = (new \Haystack\HArray($names))
+$greetings = (new \Haystack\HArray(['John', 'Mary', 'Jessica', 'Darren']))
     ->filter(function ($name) { return strlen($name) < 5; })
     ->map(function ($name) { return 'Hi ' . $name; });
+
 echo join("\n", $greetings->toArray());
+// "Hello John, Hello Mary, Hello Darren"
 </code></pre>
-                <!-- Could reduce to one line... -->
+                <!-- Could reduce function calls to one line... we'll see more of this in a bit -->
                 </section>
-
-                <section>
-                    <h3>Quantities of Data</h3>
-
-                    <ul>
-                        <li class="fragment">NULL</li>
-                        <li class="fragment">0</li>
-                        <li class="fragment">1</li>
-                        <li class="fragment">3</li>
-                        <li class="fragment">a lot</li>
-                    </ul>
-                </section>
-
-                <section>
-                    <pre><code class="php" data-trim>
-<!-- show example of NULL/0 -->
-if ($user->getAddress() && $user->isInGroup($group)) {
-...............
-}
-</code></pre>
-                </section>
-
-
-
-
-
-                <section>[done planning this far]</section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <!-- limitations of the human brain -->
-
-                <!--
-                we're going to look at a lot of code today. the catch is really bad code
-                that benefits the most from the techniques I'll talk about today is hard to show
-                on slides because that bad code is long and hard to follow. 
-                I hope looking at "simple" bad code examples you can recognize these bad
-                coding patterns in the code you work with.
-            -->
-
-            <!--
-                Before we go too far I want to show where we're going. So if you suddenly need
-                to leave or want to check out another talk you'll have at least learned something.
-                Ready? Pay close attention.
-        -->
-                
-
-                <section data-transition="none">
-                    <pre><code class="php" data-trim>
-$names = ['John', 'Mary', 'Jessica', 'Darren'];
-$greetings = (new \Haystack\HArray($names))
-    ->filter(function ($name) => strlen($name) < 5 )
-    ->map(function ($name) => 'Hi ' . $name );
-echo join("\n", $greetings->toArray());
-</code></pre>
-                <!-- What if we could get rid of the curly braces and return statements? -->
-                </section>
-
-                <!--
-
-            -->
-
-                <!--
-                writing expressive code comes easier with array-processing functions
-                You can look up in the language what the code is doing.
-                How many times have you seen a developer use specially formatted strings?
-                "Module.Submodule.Class" for example? It's followed by
-                $parts = explode('.', $str);
-                $module = $parts[0];
-                $submodule = $parts[1];
-                $class = $parts[2];
-                -->
 
                 
 
+            
+<!-- 
                 <section data-transition="none">
                     <h5>Loops</h5>
 
@@ -890,8 +1111,9 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
     echo "ID: " . $row["id"] . " Name: " . $row["name"] . "<br>";
 }
 </code></pre>
-                </section>
+                </section> -->
 
+<!--
                 <section data-transition="none">
                     <h5>Loops</h5>
 
@@ -903,148 +1125,12 @@ foreach ($users as $user) {
 }
 </code></pre>
                 </section>
+-->
 
                 
-                <!--
-                another slide about how functions are often defined elsewhere,
-                rather than close to where they're used.
-                This is a higher level abstraction, but can be more difficult to reason about.
-                We don't know for sure what happens in the function.
-                    IDEs let us "jump into" functions and check out the code.
-                Consistent abstraction is difficult.
-                    Separating what changes from what stays the same.
-
-                What if we could gain the benefits of using functions (limited Scope, less local variables)
-                without the mental penalty of abstraction?
-
-                What if we could also better document our foreach() and while() loops with
-                what we're REALLY trying to do?
-            -->
-
-                <section data-transition="none">
-                    <!-- Vocabulary... -->
-                    <h5>Cool</h5>
-
-                    <ul>
-                        <li class="fragment">Chess is <span class="red">cool</span></li>
-                        <li class="fragment">Roller coasters are <span class="red">cool</span></li>
-                        <li class="fragment">Playing chess on a roller coaster is <span class="red">cool</span></li>
-                    </ul>
-                </section>
-
-                <section data-transition="none">
-                    <img src="images/chess-roller-coaster.png" style="max-width:41%;" class="no-border">
-                </section>
-
-                <section data-transition="none">
-                    <pre><code class="php" data-trim>
-$start = [1, 2, 3, 4, 5];
-$end = [];
-
-foreach ($start as $s) {
-    $end[] = $s * 2;
-}
-
-// $end contains [2, 4, 6, 8, 10]
-
-// $start, $end, $s
-</code></pre>
-                </section>
-
+<!--
                 <section>
-                    <h5>array_map</h5>
-                    <pre><code class="php" data-trim>
-$start = [1, 2, 3, 4, 5];
-$end = [];
-
-foreach ($start as $s) {
-    $end[] = $s * 2;
-}
-
-// $end contains [2, 4, 6, 8, 10]
-
-// $start, $end, $s
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <h5>array_map</h5>
-                    <pre><code class="php" data-trim>
-$start = [1, 2, 3, 4, 5];
-$end = array_map(function ($i) {
-    return $i * 2;
-}, $start);
-
-// $end contains [2, 4, 6, 8, 10]
-
-// $start, $end
-</code></pre>
-                </section>
-
-                <section>
-                    <h5>array_filter</h5>
-                    <pre><code class="php" data-trim>
-$start = [1, 2, 3, 4, 5, 6];
-$even = [];
-
-foreach ($start as $s) {
-    if ($s % 2 === 0) {
-        $even[] = $s;
-    }
-}
-
-// $even contains [2, 4, 6]
-// $start, $event, $i
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <h5>array_filter</h5>
-                    <pre><code class="php" data-trim>
-$start = [1, 2, 3, 4, 5, 6];
-$even = array_filter($start, function ($i) {
-    return $i %2 === 0;
-});
-
-// $even contains [2, 4, 6]
-</code></pre>
-                </section>
-
-                <section>
-                    <h5>array_reduce</h5>
-                    <pre><code class="php stretch" data-trim>
-$start = [1, 2, 3, 4, 5];
-$end = 0;
-
-foreach ($start as $s) {
-    $end = $end + $s;
-}
-
-// Alternate: $end = array_sum($start);
-// $end is 15
-
-// $start, $end
-</code></pre>
-                </section>
-
-                <section>
-                    <h5>array_reduce</h5>
-                    <pre><code class="php stretch" data-trim>
-$start = [1, 2, 3, 4, 5];
-$end = array_reduce($start, function ($end, $i) {
-    $end = $end + $i;
-    return $end;
-}, 0);
-
-// $end is 15
-
-// $start, $end
-</code></pre>
-                </section>
-
-
-                <section>
-                    <h2>Replacing Loops with array_*</h2>
+                    <h2>Use array_* within object methods</h2>
                 </section>
 
                 <section>
@@ -1116,34 +1202,13 @@ public function getOldestStudent() {
 }
 </code></pre>
                 </section>
-
-                <section>
+-->
+<!--                <section>
                     <h2>Pipelines</h2>
                 </section>
 
-                <section>
-                    <h5>Friends Pipelines</h5>
-                    <pre><code class="php" data-trim>
-$friends = ['John', 'Chris', 'Penelope', 'Megan'];
-$shortFriends = array_filter($friends, function ($name) {
-    return strlen($name) < 6;
-});
-
-$greetings = array_map(function ($name) {
-    return 'Hello ' . $name;
-}, $shortFriends);
-
-$hello = array_reduce($greetings, function ($output, $greeting) {
-    $output .= ', ' . $greeting;
-    return $output;
-});
-
-echo $hello; // ", Hello John, Hello Chris, Hello Megan"
-</code></pre>
-                </section>
-
                 <section data-transition="none">
-                    <h5>Pipelines</h5>
+                    <h5>Friends Pipelines</h5>
                     <pre><code class="php" data-trim>
 $friends = ['John', 'Chris', 'Penelope', 'Megan'];
 
@@ -1152,73 +1217,69 @@ echo array_reduce(array_map(function ($name) {
 }, array_filter($friends, function ($name) {
     return strlen($name) < 6;
 })), function ($output, $greeting) {
-    $output .= ', ' . $greeting;
+    $glue = $output ? ', ' : '';
+    $output .= $glue . $greeting;
     return $output;
 });
 
-// ", Hello John, Hello Chris, Hello Megan"
-</code></pre>
-                </section>
-
-                <section>
-<pre><code class="php" data-trim>
-$result = join(", ", keepUnderLength(6, addGreeting(friends)))
-</code></pre>
-                </section>
-
-                <section>
-                    <h5>Unix Pipes</h5>
-                    <pre><code class="bash" data-trim>
-$ cat friends.txt
-John
-Chris
-Penelope
-Megan
-</code></pre>
-                    <pre><code class="bash" data-trim>
-$ cat friends.txt | awk 'length($0) < 6'
-John
-Chris
-Megan
-</code></pre>
-                    <pre><code class="bash" data-trim>
-$ cat friends.txt | awk 'length($0) < 6' | xargs -L1 echo "Hello"
-Hello John
-Hello Chris
-Hello Megan
-</code></pre>
-    <!-- English reads left to right, top to bottom -->
-                </section>
-
-                <section>
-                    <h5>Friends Pipeline</h5>
-                    <pre><code class="bash" data-trim>
-$friends = new \Haystack\HArray(['John', 'Chris', 'Penelope', 'Megan']);
-
-$greetings = $friends->filter(function ($name) {
-    return strlen($name) < 6;
-})
-->map(function ($name) {
-    return 'Hello ' . $name;
-});
-
-echo join(", ", $greetings->toArray());
 // "Hello John, Hello Chris, Hello Megan"
 </code></pre>
                 </section>
 
-                <section data-transition="none">
-                    <img src="images/path-to-completion-broken.png" class="stretch no-border">
-                    <!-- http://static.lukew.com/webforms_lukew.pdf -->
+                
+
+                <section>
+                    <h5>Friends Pipeline</h5>
+                    <pre><code class="php" data-trim>
+$friends = new \Haystack\HArray(['John', 'Chris', 'Penelope', 'Megan']);
+
+$friends = $friends->filter(function ($name) {
+    return strlen($name) < 6;
+});
+
+$friends = $friends->map(function ($name) {
+    return 'Hello ' . $name;
+});
+
+echo join(", ", $friends->toArray());
+// "Hello John, Hello Chris, Hello Megan"
+</code></pre>
                 </section>
 
-                <section data-transition="none">
-                    <img src="images/path-to-completion-happy.png" class="stretch no-border">
-                    <!-- http://static.lukew.com/webforms_lukew.pdf -->
-                </section>
+                
+
+                <section>
+                    <h5>Friends Pipeline</h5>
+                    <pre><code class="php" data-trim>
+$friends = new \Haystack\HArray(['Bill', 'Megan', 'Brent', 'John']);
+$greetings = $friends
+    ->filter(function ($name) {
+        return strlen($name) < 6;
+    })
+    ->filter(function ($name) {
+        return strpos($name, 'B') === 0;
+    })
+    ->map(function ($name) {
+        return strrev($name);
+    })
+    ->reduce(function ($carry, $name) {
+        $carry[] = ['name' => $name];
+        return $carry;
+    }, [])
+    ->toArray();
+
+
+// [
+//     ["name" => "lliB"]
+//     ["name" => "tnerB"]
+// ]
+</code></pre>
+                </section>-->
+
+                
 
                 <section data-transition="none">
-                    <h2>Another Pipeline Refactor</h2>
+                    <h2>More Pipeline Refactor Practice</h2>
                 </section>
 
                 <section data-transition="none">
@@ -1330,7 +1391,7 @@ $result = array_map(function($x) => $x * 2, $elements);
 </code></pre>
                 </section>
 
-                <section data-transition="none">
+                <section>
                     <h5>PHP RFC: Arrow Functions</h5>
                     <pre><code class="bash" data-trim>
 $friends = new \Haystack\HArray(['John', 'Chris', 'Penelope', 'Megan']);
@@ -1342,10 +1403,6 @@ $greetings = $friends
 echo join(", ", $greetings->toArray());
 // "Hello John, Hello Chris, Hello Megan"
 </code></pre>
-                </section>
-
-                <section>
-                    <img src="images/ci.png" class="stretch" style="border:0;box-shadow:none">
                 </section>
 
                 <section>
@@ -1369,8 +1426,50 @@ $ composer create-project -s dev johnkary/rethinking-loops
                 </section>
 
                 <section>
+                    <pre><code class="clojure" data-trim>
+(defn encode
+  [#^InputStream input #^Writer output #^String alphabet line-length]
+  (let [buffer (make-array Byte/TYPE 3)]
+    (loop [line 0]
+      (let [len (.read input buffer)]
+        (when (pos? len)
+          (let [b0 (Integer/valueOf (int (aget buffer 0)))
+                b1 (Integer/valueOf (int (aget buffer 1)))
+                b2 (Integer/valueOf (int (aget buffer 2)))]
+            (cond (= len 3)
+                  (let [s0 (bit-and 0x3F (bit-shift-right b0 2))
+                        s1 (bit-and 0x3F
+                                    (bit-or (bit-shift-left b0 4)
+                                            (bit-shift-right b1 4)))
+                        s2 (bit-and 0x3F
+                                    (bit-or (bit-shift-left b1 2)
+                                            (bit-shift-right b2 6)))
+                        s3 (bit-and 0x3F b2)]
+                    (.append output (.charAt alphabet s0))
+                    (.append output (.charAt alphabet s1))
+                    (.append output (.charAt alphabet s2))
+                    (.append output (.charAt alphabet s3))))))))))
+</code></pre>
+                </section>
+
+                <section>
+                    <img src="images/ci.png" class="stretch" style="border:0;box-shadow:none">
+                </section>
+
+                <section>
                     <h5>Bugs cannot exist<br>in code that doesn't exist</h5>
                     <h5 class="fragment">Be Expressive</h5>
+                    <h5 class="fragment">Thanks.</h5>
+                </section>
+
+                <section>
+                    <h3>Photo Credits</h3>
+                    <ul>
+                        <li>Title slide background - <a href="https://www.flickr.com/photos/tbrianjones/22135624309/">https://www.flickr.com/photos/tbrianjones/22135624309/</a></li>
+                        <li>People playing chess on roller coasters - <a href="https://xkcd.com/chesscoaster/">https://xkcd.com/chesscoaster/</a></li>
+                        <li>This is why you shouldn't interrupt a programmer - <a href="https://twitter.com/detly/status/394755439314755584">https://twitter.com/detly/status/394755439314755584</a></li>
+                        <li>Path to completion examples - <a href="http://static.lukew.com/webforms_lukew.pdf">Luke Wroblewski - Best Practices For Form Design</a></li>
+                    </ul>
                 </section>
 
                 <section data-background="images/questions-bg.jpg">
@@ -1391,6 +1490,123 @@ $ composer create-project -s dev johnkary/rethinking-loops
                         <li><a href="http://bit.ly/rethinking-loops-perf-1">Arrays vs Objects Benchmarks (5.6, 7.0)</a><br>http://bit.ly/rethinking-loops-perf-1<br><br></li>
                         <li><a href="http://bit.ly/rethinking-loops-perf-2">Why objects (usually) use less memory than arrays in PHP</a><br>http://bit.ly/rethinking-loops-perf-2</li>
                     </ul>
+                </section>
+
+                <section>
+                    <h5>Why Arrays?</h5>
+
+                    <table style="font-size:0.8em;">
+                        <thead>
+                            <tr>
+                                <th>Quantity</th>
+                                <th>One</th>
+                                <th>Arrays</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="fragment">
+                                <td>NULL</td>
+                                <td>null</td>
+                                <td>[]</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td>0</td>
+                                <td>null</td>
+                                <td>[]</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td>1</td>
+                                <td>new User()</td>
+                                <td>[new User()]</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td>3</td>
+                                <td>:(</td>
+                                <td>[<br>
+                                    new User(),<br>
+                                    new User(),<br>
+                                    new User(),<br>
+                                    ]</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td>a lot</td>
+                                <td>:(</td>
+                                <td>[...]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- add code about how if/else code vs collection code -->
+
+                <section>
+                    <h5>Why Arrays?</h5>
+                    <pre><code class="php" data-trim>
+/** @param User[]|User|null $users */
+function findUserGroups($users) {
+    if ($users === null) return null;
+
+    if ($users instanceof User) {
+        $groups = Group::findByUser($users->id);
+        return $groups;
+    }
+
+    if (count($users) === 0) {
+        return [];
+    } else {
+        $groups = [];
+        foreach ($users as $user) {
+            $userGroups = Group::findByUser($user->id);
+            if (!$groups) continue;
+            $groups = array_merge($groups, $userGroups);
+        }
+    }
+
+    return $groups;
+}
+</code></pre>
+                </section>
+                <section>
+                    <h5>Why Arrays?</h5>
+                    <pre><code class="php" data-trim>
+/** @param User[]|User|null $users */
+function findUserGroups($users) {
+    $groups = [];
+
+    foreach ((array) $users as $user) {
+        $userGroups = Group::findByUser($user->id);
+        if (!$groups) continue;
+        $groups = array_merge($groups, $userGroups);
+    }
+
+    return $groups;
+}
+</code></pre>
+                </section>
+                <section>
+                    <h5>Why Arrays?</h5>
+                    <pre><code class="php" data-trim>
+/** @param User[]|User|null $users */
+function findUserGroups($users) {
+    $groups = [];
+
+    foreach ((array) $users as $user) {
+        $groups = array_merge($groups, (array) Group::findByUser($user->id));
+    }
+
+    return $groups;
+}
+</code></pre>
+                </section>
+                <section>
+                    <h5>Why Arrays?</h5>
+                    <pre><code class="php" data-trim>
+function findUserGroups($users) {
+    return array_reduce((array) $users, function ($groups, $user) {
+        return array_merge($groups, (array) Group::findByUser($user->id));
+    }, []);
+}
+</code></pre>
                 </section>
 
                 <section>
