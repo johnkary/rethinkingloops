@@ -128,7 +128,7 @@ foreach (range(1,100) as $num) {
 $max = 100;
 $all = range(1, $max);
 $threes = array_fill_keys(range(3, $max, 3), 'Fizz'); // [3 => 'Fizz', 6 => 'Fizz']
-$fives = array_fill_keys(range(5, $max, 5), 'Buzz');  // [5 => 'Buzz', 5 => 'Buzz']
+$fives = array_fill_keys(range(5, $max, 5), 'Buzz');  // [5 => 'Buzz', 10 => 'Buzz']
 $fifteens = array_fill_keys(range(15, $max, 15), 'FizzBuzz'); // [15 => 'FizzBuzz']
 
 echo join("\n", array_replace($all, $threes, $fives, $fifteens));
@@ -243,7 +243,7 @@ $end = array_reduce($start, function ($total, $i) {
                 </section>
 
                 <section>
-                    <h5>array_map</h5>
+                    <h5 class="fragment">array_map</h5>
 <pre><code class="php" data-trim>
 $start = [1, 2, 3, 4, 5];
 $end = [];
@@ -266,7 +266,7 @@ $end = array_map(function ($i) {
                 </section>
 
                 <section>
-                    <h5>array_filter</h5>
+                    <h5 class="fragment">array_filter</h5>
 <pre><code class="php" data-trim>
 $start = [1, 2, 3, 4, 5, 6];
 $even = [];
@@ -290,7 +290,7 @@ $even = array_filter($start, function ($i) {
                 </section>
 
                 <section>
-                    <h5>array_reduce</h5>
+                    <h5 class="fragment">array_reduce</h5>
                     <pre><code class="php stretch" data-trim>
 $start = [1, 2, 3, 4, 5];
 $end = 0;
@@ -310,32 +310,6 @@ $end = array_reduce($start, function ($end, $i) {
 // $end === 15
 // $end = array_sum($start);
 </code></pre>
-                </section>
-
-                <section>
-                    <img src="images/functions-in-out.png" class="stretch no-border">
-                </section>
-
-                <section data-transition="none">
-                    <img src="images/small-programs/1.png" class="stretch no-border">
-                </section>
-                <section data-transition="none">
-                    <img src="images/small-programs/2.png" class="stretch no-border">
-                </section>
-                <section data-transition="none">
-                    <img src="images/small-programs/3.png" class="stretch no-border">
-                </section>
-                <section data-transition="none">
-                    <img src="images/small-programs/4.png" class="stretch no-border">
-                </section>
-                <section data-transition="none">
-                    <img src="images/small-programs/5.png" class="stretch no-border">
-                </section>
-                <section data-transition="none">
-                    <img src="images/small-programs/6.png" class="stretch no-border">
-                </section>
-                <section data-transition="none">
-                    <img src="images/small-programs/7.png" class="stretch no-border">
                 </section>
 
                 <section>
@@ -422,6 +396,7 @@ function sayHello($name) {
 $method = "GET";
 
 sayHello('John');
+// "Hello John via GET"
 
 function sayHello($name) {
     global $method;
@@ -871,6 +846,28 @@ Hello Megan
                     <p style="color:#fff"><small>c/o Samantha Quiñones, "Building Real-Time Metric Pipelines"</small></p>
                 </section>
 
+                <section data-transition="none">
+                    <img src="images/small-programs/1.png" class="stretch no-border">
+                </section>
+                <section data-transition="none">
+                    <img src="images/small-programs/2.png" class="stretch no-border">
+                </section>
+                <section data-transition="none">
+                    <img src="images/small-programs/3.png" class="stretch no-border">
+                </section>
+                <section data-transition="none">
+                    <img src="images/small-programs/4.png" class="stretch no-border">
+                </section>
+                <section data-transition="none">
+                    <img src="images/small-programs/5.png" class="stretch no-border">
+                </section>
+                <section data-transition="none">
+                    <img src="images/small-programs/6.png" class="stretch no-border">
+                </section>
+                <section data-transition="none">
+                    <img src="images/small-programs/7.png" class="stretch no-border">
+                </section>
+
                 <section>
                     <h5>Pipelines</h5>
                     <pre><code class="php" data-trim>
@@ -887,10 +884,10 @@ class HArray extends \ArrayObject
         $this->array = $a;
     }
     public function map(callable $func) {
-        return new HArray(array_map($func, $this->array));
+        return new static(array_map($func, $this->array));
     }
     public function filter(callable $func = null) {
-        return new HArray(array_filter($this->array, $func));
+        return new static(array_filter($this->array, $func));
     }
     public function reduce(callable $func, $initial = null) {
         return array_reduce($this->array, $func, $initial);
@@ -1453,7 +1450,7 @@ echo join(", ", $greetings->toArray());
                 <section>
                     <h5>Rethinking Loops Playground</h5>
                     <pre><code class="bash" data-trim>
-$ composer create-project -s dev johnkary/rethinking-loops
+$ composer create-project johnkary/rethinking-loops
 </code></pre>
                 </section>
 
@@ -1461,7 +1458,6 @@ $ composer create-project -s dev johnkary/rethinking-loops
                     <h5>Reading List</h5>
                     <ul>
                         <li><a href="http://www.confidentruby.com/">Confident Ruby</a></li>
-                        <li><a href="https://github.com/kapolos/pramda">Pramda</a></li>
                         <li><a href="http://martinfowler.com/articles/collection-pipeline/">Martin Fowler on Pipelines</a></li>
                         <li><a href="http://www.catb.org/esr/writings/taoup/html/index.html">The Art of Unix Programming</a></li>
                         <li><a href="http://shop.oreilly.com/product/0636920028857.do">Functional JavaScript</a></li>
