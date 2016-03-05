@@ -20,7 +20,7 @@ Create a new project based on this project using
 [Composer](https://getcomposer.org/).
 
 ```sh
-$ composer create-project -s dev johnkary/rethinking-loops
+$ composer create-project johnkary/rethinking-loops
 $ cd rethinking-loops
 ```
 
