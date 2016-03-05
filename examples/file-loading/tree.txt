@@ -1,0 +1,31 @@
+$ tree /projects/loops/src
+src
+└── FizzBuzz
+    ├── Canonical.php
+    ├── Haystack.php
+    └── SomeInterface.php
+
+[
+    "/projects/loops/src/FizzBuzz/.",
+    "/projects/loops/src/FizzBuzz/..",
+    "/projects/loops/src/FizzBuzz/Canonical.php",
+    "/projects/loops/src/FizzBuzz/Haystack.php",
+    "/projects/loops/src/FizzBuzz/SomeInterface.php",
+]
+
+[
+    "/projects/loops/src/FizzBuzz/Canonical.php",
+    "/projects/loops/src/FizzBuzz/Haystack.php",
+    "/projects/loops/src/FizzBuzz/SomeInterface.php",
+]
+
+[
+    "\\RethinkingLoops\\FizzBuzz\\Canonical",
+    "\\RethinkingLoops\\FizzBuzz\\Haystack",
+    "\\RethinkingLoops\\FizzBuzz\\SomeInterface",
+]
+
+[
+    "\\RethinkingLoops\\FizzBuzz\\Canonical",
+    "\\RethinkingLoops\\FizzBuzz\\Haystack",
+]

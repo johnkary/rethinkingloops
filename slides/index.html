@@ -210,8 +210,8 @@ $end = array_reduce($start, function ($total, $i) {
 </code></pre>
                 </section>
 
-                <section data-transition="none">
-                    <h3>Expressiveness</h3>
+                <section>
+                    <h3>Expressive Language</h3>
                 </section>
 
                 <section data-transition="none">
@@ -304,7 +304,7 @@ foreach ($start as $s) {
 <pre class="fragment"><code class="php stretch" data-trim>
 $start = [1, 2, 3, 4, 5];
 $end = array_reduce($start, function ($end, $i) {
-    return $end += $i;
+    return $end + $i;
 }, 0);
 
 // $end === 15
@@ -342,7 +342,7 @@ $end = array_reduce($start, function ($end, $i) {
                     <img src="images/functions-in-out.png" class="stretch no-border">
                 </section>
 
-                <section>
+                <section data-transition="none">
                     <h5>Defining a global function</h5>
                     <pre><code class="php" data-trim>
 function sayHello($name) {
@@ -353,7 +353,7 @@ echo sayHello("John"); // "Hello John"
 </code></pre>
                 </section>
 
-                <section>
+                <section data-transition="none">
                     <h5>Defining a static function</h5>
                     <pre><code class="php" data-trim>
 class User {
@@ -366,7 +366,7 @@ echo User::sayHello("John"); // "Hello John"
 </code></pre>
                 </section>
 
-                <section>
+                <section data-transition="none">
                     <h5>Defining an object method</h5>
                     <pre><code class="php" data-trim>
 class User {
@@ -386,7 +386,7 @@ echo $user->sayHello();  // "Hello John"
 </code></pre>
                 </section>
 
-                <section>
+                <section data-transition="none">
                     <h5>Defining anonymous functions</h5>
                     <pre><code class="php" data-trim>
 $sayHello = function ($name) {
@@ -397,35 +397,8 @@ echo $sayHello('John'); // "Hello John"
 </code></pre>
                 </section>
 
-<!--
                 <section>
-                    <h5>Wrapping code in functions</h5>
-                    <pre><code class="php" data-trim>
-$oldest = null;
-foreach ($roster->getStudents() as $student) {
-    if (!$oldest || $student->getAge() > $oldest->getAge()) {
-        $oldest = $student;
-    }
-}
-</code></pre>
-                    <pre class="fragment"><code class="php" data-trim>
-function getOldestStudent(array $students) {
-    $oldest = null;
-    foreach ($students as $student) {
-        if (!$oldest || $student->getAge() > $oldest->getAge()) {
-            $oldest = $student;
-        }
-    }
-
-    return $oldest;
-}
-$oldest = getOldestStudent($roster->getStudents());
-</code></pre>
-                </section>
--->
-
-                <section>
-                    <h3>Scope</h3>
+                    <h5>Scope</h5>
                     <!--
                     Variables outside function are not accessible inside
                     We control what goes in and what comes out
@@ -443,7 +416,7 @@ function sayHello($name) {
                 </section>
 
                 <section data-transition="none">
-                    <h3>Scope</h3>
+                    <h5>Scope</h5>
                     <!-- global keyword brings in variables -->
                     <pre><code class="php" data-trim class="stretch">
 $method = "GET";
@@ -458,7 +431,7 @@ function sayHello($name) {
                 </section>
 
                 <section data-transition="none">
-                    <h3>Scope</h3>
+                    <h5>Scope</h5>
                     <!-- One way is to pass these values in -->
                     <pre><code class="php" data-trim class="stretch">
 $method = "GET";
@@ -473,7 +446,7 @@ echo sayHello('John', $method); // "Hello John via GET"
 
                 <section data-transition="none">
                     <!-- Variables inside functions are not accessible outside -->
-                    <h3>Scope</h3>
+                    <h5>Scope</h5>
                     <pre><code class="php" data-trim class="stretch">
 function sayHello($name) {
     return 'Hello ' . $name;
@@ -487,7 +460,7 @@ echo $name;
                 </section>
 
                 <section data-transition="none">
-                    <h3>Scope</h3>
+                    <h5>Scope</h5>
                     <!-- Another is `use` when using closures -->
                     <pre><code class="php" data-trim class="stretch">
 $method = "GET";
@@ -642,71 +615,6 @@ function doComplicatedThing() {
                     <!-- https://twitter.com/detly/status/394755439314755584 -->
                 </section>
 
-                <section>
-                    <!-- ctrl + F for... value, custom, entry -->
-                    <h5>Readability :(</h5>
-                    <pre><code class="php" data-trim>
-$customFieldValues = $this->getRequestParam("customFieldValues");
-if ($customFieldValues) {
-    foreach ($customFieldValues as $custValueInfo) {
-        $valueEntry = $reservation->getCustomFieldValueEntry($custValueInfo['id']);
-        // Not found, this is the first time they're setting the value, so we need
-        // to create a new entry
-        if (!$valueEntry) {
-            $customField = $resource->getCustomField($custValueInfo['id']);
-            if (!$customField) {
-                throw new \InvalidArgumentException("Attempted to set a custom field that does not belong to the specified Resource");
-            }
-
-            $valueEntry = new ReservationCustomFieldValueEntry();
-            $valueEntry->setField($customField);
-            $reservation->addCustomFieldValue($valueEntry);
-        }
-
-        $valueEntry->setValue($custValueInfo['value']);
-    }
-}
-</code></pre>
-                </section>
-
-                <section>
-                    <h5>Local variables are noisy</h5>
-                    <!--
-                    Some literature encourages extracting variables for "readability"
-                        I think this often does the opposite.
-                        Once a variable exists a reader must mentally keep track of it.
-                        Working Memory and mental slots
-                    Variable for long-chained methods?
-                    Timid code in case Students is empty?
-                    When can we forget about these variables defined above?
-                    -->
-                    <pre><code class="php" data-trim>
-public function getOldestStudentAction(Request $request) {
-    $method = $request->getMethod();
-    if ($method !== 'POST') {
-        throw new \BadRequestMethod('Endpoint only accepts PUT requests');
-    }
-
-    $db = $this->getDatabase()->getConnection();
-    $roster = $db->query('Roster', $request->get('roster_id'));
-
-    $oldest = null;
-    foreach ($roster->getStudents() as $student) {
-        if (!$oldest || $student->getAge() > $oldest->getAge()) {
-            $oldest = $student;
-        }
-    }
-
-    $oldestName = $oldest->getName();
-    echo "The oldest student is " . $oldestName . "\n";
-    $db->close();
-    $roster->updateLastAccess();
-
-    // $method, $db, $roster, $request, $oldest, $student, $oldestName
-}
-</code></pre>
-                </section>
-
                 <section data-transition="none">
                     <h5>Nested Control Structures :(</h5>
 
@@ -736,9 +644,21 @@ foreach ($users as $user) {
                 </section>
 
                 <section data-transition="none">
-                    <h5>Nested Control Structures :(</h5>
+                    <!--
+    "control structure"
+    This is "imperative" programming.
+    Each control structure is another level deeper.
+    Potentially new rules are in effect,
+    new variables are defined or maybe they're not used any more?
 
-                    <pre><code class="php" data-trim>
+    Why do each of these exist? Are they simply minor details or whole new contexts?
+    Each foreach() is its own mini-program, its own area of concerns.
+    
+    When is it safe to forget about the context we built up in that block?
+-->
+                    <h5>Control Structure Anxiety</h5>
+
+                    <pre class="fragment"><code class="php" data-trim>
 foreach (...) {
     if (...) {
         foreach (...) {
@@ -755,26 +675,10 @@ foreach (...) {
     }
 }
 </code></pre>
-<!--
-    "control structure"
-    This is "imperative" programming.
-    Each control structure is another level deeper.
-    Potentially new rules are in effect,
-    new variables are defined or maybe they're not used any more?
 
-    Why do each of these exist? Are they simply minor details or whole new contexts?
-    Each foreach() is its own mini-program, its own area of concerns.
-    
-    When is it safe to forget about the context we built up in that block?
--->
-                </section>
-
-                <section data-transition="none">
-                    <h3>Control Structure Anxiety</h3>
-
-                    <ul>
-                        <li>New rules<!-- are potentially in effect--></li>
-                        <li>New variables<!-- are introduced. When is it safe to forget about them? Flush out context and move on? --></li>
+                    <ul class="fragment">
+                        <li>New rules?<!-- are potentially in effect--></li>
+                        <li>New variables?<!-- are introduced. When is it safe to forget about them? Flush out context and move on? --></li>
                         <li>Minor details vs New contexts</li>
                     </ul>
 
@@ -782,7 +686,72 @@ foreach (...) {
                 </section>
 
                 <section>
-                    <h3>Ruthlessly Eliminate Local Variables</h3>
+                    <!-- ctrl + F for... value, custom, entry -->
+                    <h5>Readability :(</h5>
+                    <pre><code class="php" data-trim>
+$customFieldValues = $this->getRequestParam("customFieldValues");
+if ($customFieldValues) {
+    foreach ($customFieldValues as $custValueInfo) {
+        $valueEntry = $reservation->getCustomFieldValueEntry($custValueInfo['id']);
+        // Not found, this is the first time they're setting the value, so we need
+        // to create a new entry
+        if (!$valueEntry) {
+            $customField = $resource->getCustomField($custValueInfo['id']);
+            if (!$customField) {
+                throw new \InvalidArgumentException("Attempted to set a custom field that does not belong to the specified Resource");
+            }
+
+            $valueEntry = new ReservationCustomFieldValueEntry();
+            $valueEntry->setField($customField);
+            $reservation->addCustomFieldValue($valueEntry);
+        }
+
+        $valueEntry->setValue($custValueInfo['value']);
+    }
+}
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>Local variables are noisy :(</h5>
+                    <!--
+                    Some literature encourages extracting variables for "readability"
+                        I think this often does the opposite.
+                        Once a variable exists a reader must mentally keep track of it.
+                        Working Memory and mental slots
+                    Variable for long-chained methods?
+                    Timid code in case Students is empty?
+                    When can we forget about these variables defined above?
+                    -->
+                    <pre><code class="php" data-trim>
+public function getOldestStudentAction(Request $request) {
+    $method = $request->getMethod();
+    if ($method !== 'PUT') {
+        throw new \BadRequestMethod('Endpoint only accepts PUT requests');
+    }
+
+    $db = $this->getDatabase()->getConnection();
+    $roster = $db->query('Roster', $request->get('roster_id'));
+
+    $oldest = null;
+    foreach ($roster->getStudents() as $student) {
+        if (!$oldest || $student->getAge() > $oldest->getAge()) {
+            $oldest = $student;
+        }
+    }
+
+    $oldestName = $oldest->getName();
+    echo "The oldest student is " . $oldestName . "\n";
+    $db->close();
+    $roster->updateLastAccess();
+
+    // $method, $db, $roster, $request, $oldest, $student, $oldestName
+}
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>Ruthlessly Eliminate Local Variables</h5>
                     <!-- Readable, Reasonable -->
                     <pre><code class="php" data-trim>
 $method = $request->getMethod();
@@ -798,7 +767,7 @@ if ($request->getMethod() !== 'POST') {
                 </section>
 
                 <section>
-                    <h3>Chain Method Calls</h3>
+                    <h5>Chain Method Calls</h5>
                     <!-- Readable, Reasonable -->
                     <pre><code class="php" data-trim>
 $db = $this->getDatabase();
@@ -814,9 +783,15 @@ $roster = $this
                     <!-- Yes, dependency injection is a thing but it's another topic -->
                 </section>
 
+
+
+<!-- TODO: Add transition point how this applies to functions -->
+
+
+
                 <section>
-                    <h5>array ==> map ==> map ==> filter ==> reduce</h5>
-                    <pre style="width:80%" class="fragment"><code class="php stretch" data-trim>
+                    <h5>array ==> map ==> filter ==> reduce</h5>
+                    <pre style="width:80%"><code class="php stretch" data-trim>
 // 1. Multiply by 2
 // 2. Remove any results over 9
 // 3. Add numbers together
@@ -844,9 +819,9 @@ array_reduce($array, $fn, $initial)
 <pre><code class="php" data-trim>
 $friends = ['John', 'Chris', 'Penelope', 'Megan'];
 
-$result = join(", ", addGreeting(keepUnderLength(6, $friends)));
+echo join(", ", addGreeting(keepUnderLength(6, $friends)));
 
-echo $result; // "Hello John, Hello Chris, Hello Megan"
+// "Hello John, Hello Chris, Hello Megan"
 </code></pre>
 <pre class="fragment"><code class="php" data-trim>
 $friends = ['John', 'Chris', 'Penelope', 'Megan'];
@@ -888,6 +863,12 @@ Hello Megan
     English reads left to right, top to bottom
     Each program is small, self-contained and can't interfere with the other
 -->
+                </section>
+
+                <section data-background="#222">
+                    <img src="images/network-services-pipeline.png" class="no-border stretch">
+                    <!-- https://joind.in/event/sunshinephp-2016/building-real-time-data-pipelines -->
+                    <p style="color:#fff"><small>c/o Samantha Quiñones, "Building Real-Time Metric Pipelines"</small></p>
                 </section>
 
                 <section>
@@ -957,11 +938,24 @@ return $greetings;
                 </section>
 
                 <section>
+                    <h5>JavaScript ES6 Promises</h5>
+                    <pre><code class="javascript" data-trim>
+get('story.json')
+.then(function(response) {
+    return JSON.parse(response);
+})
+.then(function(response) {
+    console.log("Yey JSON!", response);
+});
+</code></pre>
+                </section>
+
+                <section>
                     <h3>Path to Completion</h3>
                 </section>
 
                 <section>
-                    <h3><a href="http://www.lukew.com/resources/web_form_design.asp">Web Form Design: Filling in the Blanks</a></h3>
+                    <h5><a href="http://www.lukew.com/resources/web_form_design.asp">Web Form Design: Filling in the Blanks</a></h5>
                     <h5>Luke Wroblewski</h5>
                     <img src="images/web-forms-cover.png" style="width:40%" class="no-border">
                 </section>
@@ -971,7 +965,7 @@ return $greetings;
                     <!-- http://static.lukew.com/webforms_lukew.pdf -->
                 </section>
 
-                <section data-transition="none">
+                <section>
                     <img src="images/path-to-completion-happy.png" class="stretch no-border">
                     <!-- http://static.lukew.com/webforms_lukew.pdf -->
                 </section>
@@ -1001,285 +995,7 @@ echo (new \Haystack\HArray($start))
                 </section>
 
                 <section data-transition="none">
-                    <h5>Refactor to Pipelines</h5>
-                    <pre class="fragment"><code class="php" data-trim>
-$names = ['John', 'Mary', 'Jessica', 'Darren'];
-
-for ($i=0; $i < strlen($names); $i++) {
-    $name = $names[$i];
-    if (strlen($name) < 5) {
-        echo "Hi " . $name . "\n";
-    }
-}
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <h5>Refactor to Pipelines</h5>
-                    <pre><code class="php" data-trim>
-$names = ['John', 'Mary', 'Jessica', 'Darren'];
-
-foreach ($names as $name) {
-    if (strlen($name) < 5) {
-        echo 'Hi ' . $name . "\n";
-    }
-}
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <h5>Refactor to Pipelines</h5>
-                    <pre><code class="php" data-trim>
-$names = ['John', 'Mary', 'Jessica', 'Darren'];
-
-$short = array_filter($names, function ($name) {
-    return strlen($name) < 5;
-});
-
-$greetings = array_map(function ($name) {
-    return 'Hi ' . $name;
-}, $short);
-
-echo join("\n", $greetings);
-// "Hello John, Hello Mary, Hello Darren"
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <h5>Refactor to Pipelines</h5>
-                    <pre><code class="php" data-trim>
-$names = new \Haystack\HArray(['John', 'Mary', 'Jessica', 'Darren']);
-
-$short = $names->filter(function ($name) {
-    return strlen($name) < 5;
-});
-
-$greetings = $short->map(function ($name) {
-    return 'Hi ' . $name;
-}, $short);
-
-echo join("\n", $greetings->toArray());
-// "Hello John, Hello Mary, Hello Darren"
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <h5>Refactor to Pipelines</h5>
-                    <pre><code class="php" data-trim>
-$names = new \Haystack\HArray(['John', 'Mary', 'Jessica', 'Darren']);
-$greetings = $names
-    ->filter(function ($name) {
-        return strlen($name) < 5;
-    })
-    ->map(function ($name) {
-        return 'Hi ' . $name;
-    });
-
-echo join("\n", $greetings->toArray());
-// "Hello John, Hello Mary, Hello Darren"
-</code></pre>
-                <!-- This is a little more condensed. -->
-                </section>
-
-                <section data-transition="none">
-                    <h5>Refactor to Pipelines</h5>
-                    <pre><code class="php" data-trim>
-$greetings = (new \Haystack\HArray(['John', 'Mary', 'Jessica', 'Darren']))
-    ->filter(function ($name) { return strlen($name) < 5; })
-    ->map(function ($name) { return 'Hi ' . $name; });
-
-echo join("\n", $greetings->toArray());
-// "Hello John, Hello Mary, Hello Darren"
-</code></pre>
-                <!-- Could reduce function calls to one line... we'll see more of this in a bit -->
-                </section>
-
-                
-
-            
-<!-- 
-                <section data-transition="none">
-                    <h5>Loops</h5>
-
-                    <pre><code class="php" data-trim>
-mysql_connect("localhost", "user", "password");
-mysql_select_db("mydb");
-
-$result = mysql_query("SELECT * FROM users");
-
-while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-    echo "ID: " . $row["id"] . " Name: " . $row["name"] . "<br>";
-}
-</code></pre>
-                </section> -->
-
-<!--
-                <section data-transition="none">
-                    <h5>Loops</h5>
-
-                    <pre><code class="php" data-trim>
-$users = User::all();
-
-foreach ($users as $user) {
-    echo "ID: " . $user->id . " Name: " . $user->name . "<br>";
-}
-</code></pre>
-                </section>
--->
-
-                
-<!--
-                <section>
-                    <h2>Use array_* within object methods</h2>
-                </section>
-
-                <section>
-                    <pre><code class="php" data-trim>
-class Roster {
-    private $students;
-
-    public function __construct(array $students) {
-        $this->students = $students;
-    }
-
-    public function getOldestStudent() {
-        // ...
-    }
-}
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <pre><code class="php" data-trim>
-$students = [
-    new Student('John', 50),
-    new Student('Chris', 25),
-    // ...
-];
-$roster = new Roster($students);
-$roster->getOldestStudent(); // John
-</code></pre>
-                </section>
-
-
-                <section data-transition="none">
-                    <pre><code class="php" data-trim>
-class Roster {
-    public function getOldestStudent() {
-        $oldest = null;
-        foreach ($this->students as $student) {
-            if (!$oldest || $student->getAge() > $oldest->getAge()) {
-                $oldest = $student;
-            }
-        }
-
-        return $oldest;
-    }
-}
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <pre><code class="php" data-trim>
-public function getOldestStudent() {
-    return array_reduce($this->students, function ($oldest, $student) {
-        if ($student->getAge() > $oldest->getAge()) {
-            $oldest = $student;
-        };
-
-        return $oldest;
-    }, reset($this->students));
-}
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <pre><code class="php" data-trim>
-public function getOldestStudent() {
-    return array_reduce($this->students, function ($oldest, $student) {
-        return $student->getAge() > $oldest->getAge() ? $student : $oldest;
-    }, reset($this->students));
-}
-</code></pre>
-                </section>
--->
-<!--                <section>
-                    <h2>Pipelines</h2>
-                </section>
-
-                <section data-transition="none">
-                    <h5>Friends Pipelines</h5>
-                    <pre><code class="php" data-trim>
-$friends = ['John', 'Chris', 'Penelope', 'Megan'];
-
-echo array_reduce(array_map(function ($name) {
-    return 'Hello ' . $name;
-}, array_filter($friends, function ($name) {
-    return strlen($name) < 6;
-})), function ($output, $greeting) {
-    $glue = $output ? ', ' : '';
-    $output .= $glue . $greeting;
-    return $output;
-});
-
-// "Hello John, Hello Chris, Hello Megan"
-</code></pre>
-                </section>
-
-                
-
-                <section>
-                    <h5>Friends Pipeline</h5>
-                    <pre><code class="php" data-trim>
-$friends = new \Haystack\HArray(['John', 'Chris', 'Penelope', 'Megan']);
-
-$friends = $friends->filter(function ($name) {
-    return strlen($name) < 6;
-});
-
-$friends = $friends->map(function ($name) {
-    return 'Hello ' . $name;
-});
-
-echo join(", ", $friends->toArray());
-// "Hello John, Hello Chris, Hello Megan"
-</code></pre>
-                </section>
-
-                
-
-                <section>
-                    <h5>Friends Pipeline</h5>
-                    <pre><code class="php" data-trim>
-$friends = new \Haystack\HArray(['Bill', 'Megan', 'Brent', 'John']);
-$greetings = $friends
-    ->filter(function ($name) {
-        return strlen($name) < 6;
-    })
-    ->filter(function ($name) {
-        return strpos($name, 'B') === 0;
-    })
-    ->map(function ($name) {
-        return strrev($name);
-    })
-    ->reduce(function ($carry, $name) {
-        $carry[] = ['name' => $name];
-        return $carry;
-    }, [])
-    ->toArray();
-
-
-// [
-//     ["name" => "lliB"]
-//     ["name" => "tnerB"]
-// ]
-</code></pre>
-                </section>-->
-
-                
-
-                <section data-transition="none">
-                    <h2>More Pipeline Refactor Practice</h2>
+                    <h3>Refactor to Pipelines</h3>
                 </section>
 
                 <section data-transition="none">
@@ -1349,11 +1065,342 @@ $greetings = $friends
                 </section>
 
                 <section>
-                    <h2>Libraries</h2>
+                    <h3>Exercise: Find all classes to instantiate</h3>
+                </section>
+
+                <section data-transition="none">
+                    <pre><code class="bash" data-trim>
+$ tree /projects/loops/src
+src
+└── FizzBuzz
+    ├── Canonical.php            class Canonical {}
+    ├── Haystack.php             class Haystack {}
+    └── SomeInterface.php        interface SomeInterface {}
+</code></pre>
+<pre class="fragment"><code class="php" data-trim>
+kataProvider('FizzBuzz');
+// [  "\\RethinkingLoops\\FizzBuzz\\Canonical",
+//    "\\RethinkingLoops\\FizzBuzz\\Haystack" ]
+</code></pre>
+<pre class="fragment"><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+    $classes = [];
+    foreach (scandir($src) as $filename) {
+        // [  ".",
+        //    "..",
+        //    "Canonical.php",
+        //    "Haystack.php",
+        //    "SomeInterface.php" ]
+    }
+
+    return $classes;
+}
+</code></pre>
+                </section>
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    $classes = [];
+    foreach (scandir($src) as $filename) {
+        $path = sprintf('%s/%s', $src, $filename);
+        // [
+        //     "/projects/loops/src/FizzBuzz/.",
+        //     "/projects/loops/src/FizzBuzz/..",
+        //     "/projects/loops/src/FizzBuzz/Canonical.php",
+        //     "/projects/loops/src/FizzBuzz/Haystack.php",
+        //     "/projects/loops/src/FizzBuzz/SomeInterface.php",
+        // ]
+    }
+
+    return $classes;
+}
+</code></pre>
+                </section>
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    $classes = [];
+    foreach (scandir($src) as $filename) {
+        $path = sprintf('%s/%s', $src, $filename);
+        if (false === is_dir($path)) {
+            // [
+            //     "/projects/loops/src/FizzBuzz/Canonical.php",
+            //     "/projects/loops/src/FizzBuzz/Haystack.php",
+            //     "/projects/loops/src/FizzBuzz/SomeInterface.php",
+            // ]
+        }
+    }
+
+    return $classes;
+}
+</code></pre>
+                </section>
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    $classes = [];
+    foreach (scandir($src) as $filename) {
+        $path = sprintf('%s/%s', $src, $filename);
+        if (false === is_dir($path)) {
+            $path = str_replace('.php', '', $path);
+            // [
+            //     "/projects/loops/src/FizzBuzz/Canonical",
+            //     "/projects/loops/src/FizzBuzz/Haystack",
+            //     "/projects/loops/src/FizzBuzz/SomeInterface",
+            // ]
+        }
+    }
+
+    return $classes;
+}
+</code></pre>
+                </section>
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    $classes = [];
+    foreach (scandir($src) as $filename) {
+        $path = sprintf('%s/%s', $src, $filename);
+        if (false === is_dir($path)) {
+            $path = str_replace('.php', '', $path);
+            $fqcn = str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $path);
+            // [
+            //     "\\RethinkingLoops\\FizzBuzz\\Canonical",
+            //     "\\RethinkingLoops\\FizzBuzz\\Haystack",
+            //     "\\RethinkingLoops\\FizzBuzz\\SomeInterface",
+            // ]
+        }
+    }
+
+    return $classes;
+}
+</code></pre>
+                </section>
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    $classes = [];
+    foreach (scandir($src) as $filename) {
+        $path = sprintf('%s/%s', $src, $filename);
+        if (false === is_dir($path)) {
+            $path = str_replace('.php', '', $path);
+            $fqcn = str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $path);
+
+            $r = new \ReflectionClass($fqcn);
+            if (false === $r->isAbstract()) {
+                $classes[] = $fqcn;
+            }
+            // [ "\\RethinkingLoops\\FizzBuzz\\Canonical",
+            //   "\\RethinkingLoops\\FizzBuzz\\Haystack" ]
+        }
+    }
+
+    return $classes;
+}
+</code></pre>
+                </section>
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    $classes = [];
+    foreach (scandir($src) as $filename) {
+        $path = sprintf('%s/%s', $src, $filename);
+        if (false === is_dir($path)) {
+            $path = str_replace('.php', '', $path);
+            $fqcn = str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $path);
+
+            $r = new \ReflectionClass($fqcn);
+            if (false === $r->isAbstract()) {
+                $classes[] = $fqcn;
+                // $dir, $src, $classes, $filename, $path, $fqcn, $r
+            }
+        }
+    }
+
+    return $classes;
+}
+</code></pre>
+                </section>
+
+                <section>
+                    <h2>Refactor to array_*</h2>
+                </section>
+
+                <section>
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    $paths = array_map(function ($filename) use ($src) {
+        return sprintf('%s/%s', $src, $filename);
+    }, scandir($src));
+
+    $files = array_filter($paths, function ($path) {
+        return false === is_dir($path);
+    });
+
+    $allClasses = array_map(function ($path) use ($src, $dir) {
+        $path = str_replace('.php', '', $path);
+        return str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $path);
+    }, $files);
+
+    return array_filter($allClasses, function ($class) {
+        return false === (new \ReflectionClass($fqcn))->isAbstract();
+    });
+}
+</code></pre>
+                </section>
+
+                <section>
+                    <h2>Refactor to Pipeline</h2>
+                </section>
+
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    return (new \Haystack\HArray(scandir($src)))
+        // [
+        //    ".",
+        //    "..",
+        //    "Canonical.php",
+        //    "Haystack.php",
+        //    "SomeInterface.php",
+        // ]
+}
+</code></pre>
+                </section>
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir)
+{
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    return (new \Haystack\HArray(scandir($src)))
+        ->map(function ($filename) use ($src) {
+            return sprintf('%s/%s', $src, $filename);
+        })
+        // [
+        //     "/projects/loops/src/FizzBuzz/.",
+        //     "/projects/loops/src/FizzBuzz/..",
+        //     "/projects/loops/src/FizzBuzz/Canonical.php",
+        //     "/projects/loops/src/FizzBuzz/Haystack.php",
+        //     "/projects/loops/src/FizzBuzz/SomeInterface.php",
+        // ]
+}
+</code></pre>
+                </section>
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    return (new \Haystack\HArray(scandir($src)))
+        ->map(function ($filename) use ($src) {
+            return sprintf('%s/%s', $src, $filename);
+        })
+        ->filter(function ($path) {
+            return false === is_dir($path);
+        })
+        // [
+        //     "/projects/loops/src/FizzBuzz/Canonical.php",
+        //     "/projects/loops/src/FizzBuzz/Haystack.php",
+        //     "/projects/loops/src/FizzBuzz/SomeInterface.php",
+        // ]
+}
+</code></pre>
+                </section>
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    return (new \Haystack\HArray(scandir($src)))
+        ->map(function ($filename) use ($src) {
+            return sprintf('%s/%s', $src, $filename);
+        })
+        ->filter(function ($path) {
+            return false === is_dir($path);
+        })
+        ->map(function ($filepath) use ($src, $dir) {
+            $filepath = str_replace('.php', '', $filepath);
+            return str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $filepath);
+        })
+        // [ "\\RethinkingLoops\\FizzBuzz\\Canonical",
+        //   "\\RethinkingLoops\\FizzBuzz\\Haystack",
+        //   "\\RethinkingLoops\\FizzBuzz\\SomeInterface" ]
+}
+</code></pre>
+                </section>
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    return (new \Haystack\HArray(scandir($src)))
+        ->map(function ($filename) use ($src) {
+            return sprintf('%s/%s', $src, $filename);
+        })
+        ->filter(function ($path) {
+            return false === is_dir($path);
+        })
+        ->map(function ($filepath) use ($src, $dir) {
+            $filepath = str_replace('.php', '', $filepath);
+            return str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $filepath);
+        })
+        ->filter(function ($fqcn) {
+            return false === (new \ReflectionClass($fqcn))->isAbstract();
+        })
+        ->toArray();
+        // [ "\\RethinkingLoops\\FizzBuzz\\Canonical",
+        //   "\\RethinkingLoops\\FizzBuzz\\Haystack" ]
+}
+</code></pre>
+                </section>
+                <section data-transition="none">
+<pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    return (new \Haystack\HArray(scandir($src)))
+        ->map(function ($filename) use ($src) {
+            return sprintf('%s/%s', $src, $filename);
+        })
+        ->filter(function ($path) {
+            return false === is_dir($path);
+        })
+        ->map(function ($filepath) use ($src, $dir) {
+            $filepath = str_replace('.php', '', $filepath);
+            return str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $filepath);
+        })
+        ->filter(function ($fqcn) {
+            return false === (new \ReflectionClass($fqcn))->isAbstract();
+        })
+        ->toArray();
+}
+</code></pre>
+                </section>
+
+                <section>
+                    <h5>Available Today!</h5>
                     <ul>
+                        <li><a href="https://github.com/ericpoe/haystack">Haystack</a></li>
                         <li><a href="https://laravel.com/docs/5.2/collections">Laravel Collections</a></li>
                         <li><a href="https://github.com/doctrine/collections">Doctrine Collections</a></li>
-                        <li><a href="https://github.com/ericpoe/haystack">Haystack</a></li>
                         <li><a href="https://github.com/kapolos/pramda">Pramda</a></li>
                         <li><a href="http://pipeline.thephpleague.com/">The League: Pipelines</a></li>
                     </ul>
@@ -1378,13 +1425,11 @@ $result = t\xform($data, $xf); // [5, 7, 9]
 
                 <section>
                     <h5>PHP RFC: Arrow Functions</h5>
-                    <pre><code class="bash" data-trim>
+                    <pre><code class="php" data-trim>
 $elements = [1, 3, 5];
 
 // live
-$result = array_map(function($x) {
-    return $x * 2;
-}, $elements);
+$result = array_map(function($x) { return $x * 2; }, $elements);
  
 // proposed
 $result = array_map(function($x) => $x * 2, $elements);
@@ -1393,7 +1438,7 @@ $result = array_map(function($x) => $x * 2, $elements);
 
                 <section>
                     <h5>PHP RFC: Arrow Functions</h5>
-                    <pre><code class="bash" data-trim>
+                    <pre><code class="php" data-trim>
 $friends = new \Haystack\HArray(['John', 'Chris', 'Penelope', 'Megan']);
 
 $greetings = $friends
@@ -1413,12 +1458,13 @@ $ composer create-project -s dev johnkary/rethinking-loops
                 </section>
 
                 <section>
-                    <h3>Explore</h3>
+                    <h5>Reading List</h5>
                     <ul>
                         <li><a href="http://www.confidentruby.com/">Confident Ruby</a></li>
                         <li><a href="https://github.com/kapolos/pramda">Pramda</a></li>
                         <li><a href="http://martinfowler.com/articles/collection-pipeline/">Martin Fowler on Pipelines</a></li>
                         <li><a href="http://www.catb.org/esr/writings/taoup/html/index.html">The Art of Unix Programming</a></li>
+                        <li><a href="http://shop.oreilly.com/product/0636920028857.do">Functional JavaScript</a></li>
                         <li><a href="https://pragprog.com/book/btlang/seven-languages-in-seven-weeks">Seven Languages in Seven Weeks</a></li>
                         <li><a href="https://mitpress.mit.edu/sicp/full-text/book/book.html">Structure and Interpretation of Computer Programs (SICP)</a></li>
                         <li><a href="https://www.youtube.com/watch?v=6mTbuzafcII">Transducers in Clojure by Rich Hickey </a></li>
@@ -1457,31 +1503,51 @@ $ composer create-project -s dev johnkary/rethinking-loops
                 </section>
 
                 <section>
+                    <pre class="fragment"><code class="php" data-trim>
+$list = [2, 4, 6, 8, 10];
+
+for ($i=0; $i < count($start); $i++) {
+    $current = $start[$i];
+    $end[] = $current * 2;
+}
+
+foreach ($list as $idx => $value) {
+    echo $value;
+    unset($list[$idx]);
+}
+</code></pre>
+                </section>
+
+                <section>
                     <h5>Bugs cannot exist<br>in code that doesn't exist</h5>
                     <h5 class="fragment">Be Expressive</h5>
                     <h5 class="fragment">Thanks.</h5>
                 </section>
 
                 <section>
-                    <h3>Photo Credits</h3>
+                    <h5>Source Material Credits</h5>
                     <ul>
-                        <li>Title slide background - <a href="https://www.flickr.com/photos/tbrianjones/22135624309/">https://www.flickr.com/photos/tbrianjones/22135624309/</a></li>
-                        <li>People playing chess on roller coasters - <a href="https://xkcd.com/chesscoaster/">https://xkcd.com/chesscoaster/</a></li>
-                        <li>This is why you shouldn't interrupt a programmer - <a href="https://twitter.com/detly/status/394755439314755584">https://twitter.com/detly/status/394755439314755584</a></li>
-                        <li>Path to completion examples - <a href="http://static.lukew.com/webforms_lukew.pdf">Luke Wroblewski - Best Practices For Form Design</a></li>
+                        <li><a href="https://twitter.com/johnkary/status/596163674743644160">John Kary tweet</a></li>
+                        <li><a href="https://www.flickr.com/photos/tbrianjones/22135624309/">Title slide background</a></li>
+                        <li><a href="https://xkcd.com/chesscoaster/">Playing chess on roller coasters (xkcd)</a></li>
+                        <li><a href="https://twitter.com/detly/status/394755439314755584">This is why you shouldn't interrupt a programmer</a></li>
+                        <li><a href="https://joind.in/event/sunshinephp-2016/building-real-time-data-pipelines">Building Real-Time Data Pipelines by Samantha Quiñones</a></li>
+                        <li><a href="http://static.lukew.com/webforms_lukew.pdf">Best Practices For Form Design by Luke Wroblewski</a></li>
+                        <li><a href="https://twitter.com/adamwathan/status/666819102581788672">Adam Wathan tweet</a></li>
                     </ul>
                 </section>
 
                 <section data-background="images/questions-bg.jpg">
                     <h2>Questions?</h2>
-                    <p><img src="images/question-box.jpg"></p>
+                    <p><img src="images/question-box.jpg" style="width:25%"></p>
                     <p>
                         <small>
-                            John Kary</a> &nbsp;•&nbsp; <a href="https://twitter.com/johnkary">@johnkary</a><br>
-                            Slides: <a href="http://johnkary.net/talks">http://johnkary.net/talks</a>
+                            John Kary</a> &nbsp;•&nbsp; <a href="https://twitter.com/johnkary">@johnkary</a><br><br>
+                            Slides: <a href="http://johnkary.net/talks">http://johnkary.net/talks</a><br>
+                            Feedback: <a href="https://joind.in/talk/bad7e">https://joind.in/talk/bad7e</a>
                         </small>
                     </p>
-                    <div id="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="images/cc-88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Rethinking Loops</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://johnkary.net/slides" property="cc:attributionName" rel="cc:attributionURL">John Kary</a> is licensed under a<br><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</div>
+                    <div id="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="images/cc-88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Rethinking Loops</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://johnkary.net/talks" property="cc:attributionName" rel="cc:attributionURL">John Kary</a> is licensed under a<br><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</div>
                 </section>
 
                 <section>
@@ -1504,22 +1570,22 @@ $ composer create-project -s dev johnkary/rethinking-loops
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="fragment">
+                            <tr>
                                 <td>NULL</td>
                                 <td>null</td>
                                 <td>[]</td>
                             </tr>
-                            <tr class="fragment">
+                            <tr>
                                 <td>0</td>
                                 <td>null</td>
                                 <td>[]</td>
                             </tr>
-                            <tr class="fragment">
+                            <tr>
                                 <td>1</td>
                                 <td>new User()</td>
                                 <td>[new User()]</td>
                             </tr>
-                            <tr class="fragment">
+                            <tr>
                                 <td>3</td>
                                 <td>:(</td>
                                 <td>[<br>
@@ -1528,7 +1594,7 @@ $ composer create-project -s dev johnkary/rethinking-loops
                                     new User(),<br>
                                     ]</td>
                             </tr>
-                            <tr class="fragment">
+                            <tr>
                                 <td>a lot</td>
                                 <td>:(</td>
                                 <td>[...]</td>
