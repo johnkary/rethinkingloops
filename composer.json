@@ -1,6 +1,7 @@
 {
   "name": "johnkary/rethinking-loops",
   "license": "MIT",
+  "description": "Supplemental code and practice katas for John Kary’s talk Rethinking Loops.",
   "authors": [
     {
       "name": "John Kary",
