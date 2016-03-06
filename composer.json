@@ -22,7 +22,7 @@
     "phpunit/phpunit": "^5.2"
   },
   "suggest" {
-    "laravel/framework": "To run all example code",
+    "laravel/framework": "To run all example code"
   },
   "autoload": {
     "psr-4": {"RethinkingLoops\\": "src"}
