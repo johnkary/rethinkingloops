@@ -2,10 +2,7 @@
 
 function array_zip(array ...$arrays) {
   return array_map(function () {
-    return array_reduce(func_get_args(), function ($zip, $new) {
-      $zip[] = $new;
-      return $zip;
-    }, []);
+    return func_get_args();
   }, ...$arrays);
 }
 
