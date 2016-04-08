@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "19ec96dd73a62d67693412694bc8b53b",
-    "content-hash": "b6d16a17a75aecb7a8dd8f6d034b512f",
+    "hash": "98a021ffc60b5479a0a8eb1b009f84b8",
+    "content-hash": "226110d1b08776be476de4c8353a73bf",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -112,6 +112,72 @@
             ],
             "description": "Forget Haystack vs Needle order, the object *IS* the Haystack.",
             "time": "2016-03-02 05:54:40"
+        },
+        {
+            "name": "ihor/nspl",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ihor/Nspl.git",
+                "reference": "b25822d14d5808be7e8951bf0e8d12277aff8f0a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ihor/Nspl/zipball/b25822d14d5808be7e8951bf0e8d12277aff8f0a",
+                "reference": "b25822d14d5808be7e8951bf0e8d12277aff8f0a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "autoload.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ihor Burlachenko",
+                    "email": "ihor.burlachenko@gmail.com"
+                }
+            ],
+            "description": "Compact functional programming oriented code and more in Non-standard PHP library (NSPL)",
+            "keywords": [
+                "curried",
+                "curry",
+                "defaultarray",
+                "flatten",
+                "functional",
+                "generator",
+                "higher-order",
+                "itemGetter",
+                "iterator",
+                "list",
+                "memoize",
+                "partial",
+                "partial application",
+                "programming",
+                "propertyGetter",
+                "python",
+                "random",
+                "weighted",
+                "weighted random",
+                "zip"
+            ],
+            "time": "2016-02-27 12:15:06"
         },
         {
             "name": "kapolos/pramda",
@@ -1287,7 +1353,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "kapolos/pramda": 20
+        "kapolos/pramda": 20,
+        "ihor/nspl": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
