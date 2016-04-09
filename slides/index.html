@@ -315,11 +315,12 @@ $sum = array_reduce($scores, function ($end, $i) {
                 <section data-transition="none">
                     <h5>Users who are minors</h5>
                     <pre><code class="php" data-trim>
-$users = array_map(function($u) { return (object) $u; }, [
+$data = [
     ['age' => 31, 'name' => 'John'],
     ['age' => 12, 'name' => 'Jamie'],
     ['age' => 8, 'name' => 'Megan'],
-]);
+];
+$users = array_map(function($u) { return (object) $u; }, $data);
 
 // array(3) {
 //   [0] => class stdClass#2 (2) {
