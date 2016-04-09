@@ -47,7 +47,7 @@
 			<div class="slides">
 				<section data-background="images/questions-bg.jpg">
 					<h1 style="margin-top:1.2em;margin-bottom:1em">Rethinking Loops</h1>
-					<p>John Kary</a> &nbsp;•&nbsp; <a href="https://twitter.com/johnkary">@johnkary</a></p>
+					<p>John Kary</a> &nbsp;•&nbsp; @johnkary</p>
 				</section>
 
                 <section>
@@ -356,7 +356,7 @@ count($minors); // int(2)
                     <h5>Users who are minors</h5>
                     <pre><code class="php" data-trim>
 $minors = array_reduce($users, function($count, $user) {
-    return $count + (int) ($user->age < 25);
+    return $count + (int) ($user->age < 18);
 });
 
 // int(2)
@@ -449,9 +449,6 @@ class User {
 
 $user = new User("John");
 echo $user->getGreeting(); // "Hello John"
-echo call_user_func('User::getGreeting'); // "Hello John"
-echo call_user_func(['User', 'getGreeting']); // "Hello John"
-echo call_user_func([$user, 'getGreeting']); // "Hello John"
 </code></pre>
                 </section>
 
@@ -590,7 +587,7 @@ $users = array_map($build, $rows);
 </code></pre>
 <pre class="fragment"><code class="php" data-trim>
 // Below are all equivalent
-$users = array_map(['User::fromArray'], $rows);
+$users = array_map('User::fromArray', $rows);
 $users = array_map(['User', 'fromArray'], $rows);
 
 $u = new User();
@@ -961,7 +958,7 @@ echo $result; // "Hello John, Hello Chris, Hello Megan"
 
                 <section>
                     <img src="images/mcilroy.jpg" style="width:35%" class="no-border">
-                    <h5>Doug McIlroy<br>Inventor of Unix pipes in 1972<small><sup>[<a href="http://www.softpanorama.org/Scripting/Piporama/history.shtml">1</a>]</sup></small></h5>
+                    <h5>Doug McIlroy<br><span class="fragment">Inventor of Unix pipes in 1972<small><sup>[<a href="http://www.softpanorama.org/Scripting/Piporama/history.shtml">1</a>]</sup></small></span></h5>
                 </section>
 
                 <section>
@@ -991,12 +988,6 @@ Hello Megan
 -->
                 </section>
 
-                <section data-background="#222">
-                    <img src="images/network-services-pipeline.png" class="no-border stretch">
-                    <!-- https://joind.in/event/sunshinephp-2016/building-real-time-data-pipelines -->
-                    <p style="color:#fff"><small>c/o Samantha Quiñones, "Building Real-Time Metric Pipelines"</small></p>
-                </section>
-
                 <section data-transition="none">
                     <img src="images/small-programs/1.png" class="stretch no-border">
                 </section>
@@ -1017,6 +1008,12 @@ Hello Megan
                 </section>
                 <section data-transition="none">
                     <img src="images/small-programs/7.png" class="stretch no-border">
+                </section>
+
+                <section data-background="#222">
+                    <img src="images/network-services-pipeline.png" class="no-border stretch">
+                    <!-- https://joind.in/event/sunshinephp-2016/building-real-time-data-pipelines -->
+                    <p style="color:#fff"><small>c/o Samantha Quiñones, "Building Real-Time Metric Pipelines"</small></p>
                 </section>
 
                 <section>
@@ -1615,6 +1612,22 @@ $ composer create-project johnkary/rethinking-loops
 
                 <section>
                     <img src="images/ci.png" class="stretch" style="border:0;box-shadow:none">
+                </section>
+
+                <section>
+                    <pre class="fragment"><code class="php" data-trim>
+$list = [2, 4, 6, 8, 10];
+
+for ($i=0; $i < count($list); $i++) {
+    $current = $start[$i];
+    $end[] = $current = *;
+}
+
+foreach ($list as $idx => $value) {
+    echo $value;
+    unset($list[$idx]);
+}
+</code></pre>
                 </section>
 
                 <section>
