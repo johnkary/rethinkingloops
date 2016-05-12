@@ -51,6 +51,12 @@
 				</section>
 
                 <section>
+                    <h3>Kansas City to New Orleans</h3>
+                    <h4>~700 mi or ~1100 km</h4>
+                    <img src="images/kc-to-nola.png" class="no-border">
+                </section>
+
+                <section>
                     <img src="images/kcpug.png" class="no-border">
                 </section>
 
@@ -138,7 +144,14 @@ echo join("\n", array_replace($all, $threes, $fives, $fifteens));
 
                 <section>
                     <p>What if we used arrays for (almost) everything?</p>
+                    <p class="fragment"><img src="images/druplicon-large.png" style="width:20%" class="no-border"></p>
+                </section>
+
+                <section data-transition="none">
+                    <p>What if we used arrays for (almost) everything?</p>
+                    <p class="fragment">Collection Oriented Programming</p>
                     <p class="fragment">Functional Programming</p>
+                    <p class="fragment"><img src="images/druplicon-large.png" style="width:20%" class="no-border"></p>
                 </section>
 
                 <section>
@@ -169,14 +182,37 @@ echo join("\n", array_replace($all, $threes, $fives, $fifteens));
                 </section>
 
                 <section>
+                    <h3>Functional Programming Concepts</h3>
+                </section>
+
+                <section>
+                    <h4>Functional Concepts</h4>
+                    <ul>
+                        <li>
+                            Map -- 1:1 transform
+                            <ul class="fragment"><li>Onions ==> Chopped Onions<br><br></li></ul>
+                        </li>
+                        <li class="fragment">
+                            Filter -- Only keep items where a condition returns true
+                            <ul class="fragment"><li>Keep only fresh Limes<br><br></li></ul>
+                        </li>
+                        <li class="fragment">
+                            Reduce -- Combine ingredients into something new!
+                            <ul class="fragment"><li>Wet ingredients + Dry ingredients</li></ul>
+                        </li>
+                    </ul>
+                </section>
+
+                <section>
                     <h5>array_map</h5>
                     <pre><code class="php" data-trim>
 // array_map ( callable $callback , array $array1 [, array $... ] )
 
 $start = [1, 2, 3, 4, 5];
-$end = array_map(function ($i) {
+$fn = function ($i) {
     return $i * 2;
-}, $start);
+};
+$end = array_map($fn, $start);
 
 // [2, 4, 6, 8, 10]
 </code></pre>
@@ -211,14 +247,20 @@ $end = array_reduce($start, function ($total, $i) {
                 </section>
 
                 <section>
+                    <img src="images/voltron.jpg" class="no-border">
+                    <p>Voltron: teaching kids distributed computing since 1984<br><small style="margin-top:0.5em">Chris Paul <img src="images/twitter-logo.png" class="no-border" style="width:20px;margin:6px 4px 0 6px"> @idiosynchris</small></p>
+                </section>
+
+                <section>
                     <h3>Expressive Language</h3>
+                    <h3 style="color:red;" class="fragment">Cool</h3>
                 </section>
 
                 <section data-transition="none">
-                    <h5>Cool</h5>
+                    <h5>Expressive Language</h5>
 
                     <ul>
-                        <li class="fragment">Chess is <span class="red">cool</span></li>
+                        <li>Chess is <span class="red">cool</span></li>
                         <li class="fragment">Roller coasters are <span class="red">cool</span></li>
                         <li class="fragment">Playing chess on a roller coaster is <span class="red">cool</span></li>
                     </ul>
@@ -229,10 +271,10 @@ $end = array_reduce($start, function ($total, $i) {
                 </section>
 
                 <section data-transition="none">
-                    <h5>Cool</h5>
+                    <h5>Expressive Language</h5>
 
                     <ul>
-                        <li class="fragment">Chess is <span class="red">contemplative</span></li>
+                        <li>Chess is <span class="red">contemplative</span></li>
                         <li class="fragment">Roller coasters are <span class="red">thrilling</span></li>
                         <li class="fragment">Playing chess on a roller coaster is <span class="red">connivingly rebellious</span></li>
                     </ul>
@@ -365,43 +407,6 @@ $minors = array_reduce($users, function($count, $user) {
                 </section>
 
                 <section>
-                    <p>What if we used arrays for (almost) everything?</p>
-                </section>
-
-                <section>
-                    <h5>Creating Users</h5>
-                    <pre><code class="php" data-trim>
-class User {
-    private $name, $email, $job;
-    public function __construct($name, $email, $job) {
-        $this->name = $name;
-        $this->email = $email;
-        $this->job = $job;
-    }
-}
-
-$names = ['John', 'Mary', 'Darren'];
-$emails = ['john@kary.net', 'mary@mks.com', 'darren@woodworking.com'];
-$jobs = ['Pilot', 'Astronaut', 'Woodworker'];
-</code></pre>
-<pre class="fragment"><code class="php" data-trim>
-$createUser = function ($name, $email, $job) {
-    return new User($name, $email, $job);
-};
-$users = array_map($createUser, $names, $emails, $jobs);
-
-// array(3) {
-//   [0] =>
-//   class User#2 (3) {
-//     private $name => string(4) "John"
-//     private $email => string(13) "john@kary.net"
-//     private $job => string(5) "Pilot"
-//   }
-//   ...
-</code></pre>
-                </section>
-
-                <section>
                     <img src="images/functions-in-out.png" class="stretch no-border">
                 </section>
 
@@ -462,6 +467,10 @@ $greeting = function ($name) {
 
 echo $greeting('John'); // "Hello John"
 </code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <h3>Scope</h3>
                 </section>
 
                 <section>
@@ -550,7 +559,7 @@ echo $greeting('John'); // "Hello John via GET"
                 </section>
 
                 <section>
-                    <h5>array_* accepts many callables...</h5>
+                    <h5>array_* accepts many callables</h5>
                     <pre><code class="php" data-trim>
 class User {
     private $name, $age;
@@ -572,7 +581,7 @@ $rows = [
 </code></pre>
                 </section>
                 <section>
-                    <h5>array_* accepts many callables...</h5>
+                    <h5>array_* accepts many callables</h5>
                     <pre><code class="php" data-trim>
 $rows = [
     ['name' => 'Sarah', 'age' => 58],
@@ -1012,6 +1021,7 @@ Hello Megan
                 </section>
 
                 <section data-background="#222">
+                    <h3 style="color:#fff">Microservices can be data pipelines</h3>
                     <img src="images/network-services-pipeline.png" class="no-border stretch">
                     <!-- https://joind.in/event/sunshinephp-2016/building-real-time-data-pipelines -->
                     <p style="color:#fff"><small>c/o Samantha Quiñones, "Building Real-Time Metric Pipelines"</small></p>
@@ -1084,8 +1094,15 @@ return $greetings;
                 </section>
 
                 <section>
-                    <h5><a href="http://www.lukew.com/resources/web_form_design.asp">Web Form Design: Filling in the Blanks</a></h5>
-                    <h5>Luke Wroblewski</h5>
+                    <h5>
+                        Luke Wroblewski<br>
+                        Web Form Design: Filling in the Blanks<br>
+                        <a href="http://www.lukew.com/resources/web_form_design.asp" class="visible-link">lukew.com/resources/web_form_design.asp</a>
+                    </h5>
+                    <!-- Product Director at Google,
+                    previously:
+                    Chief Design Architect (VP) at Yahoo!
+                    Lead User Interface Designer at eBay -->
                     <img src="images/web-forms-cover.png" style="width:40%" class="no-border">
                 </section>
 
@@ -1368,7 +1385,7 @@ function kataProvider($dir) {
                     <h2>Refactor to array_*</h2>
                 </section>
 
-                <section>
+                <section data-transition="none">
 <pre><code class="php" data-trim>
 function kataProvider($dir) {
     $src = realpath(__DIR__ . '/../src/' . $dir);
@@ -1401,6 +1418,7 @@ function kataProvider($dir) {
 <pre><code class="php" data-trim>
 function kataProvider($dir) {
     $src = realpath(__DIR__ . '/../src/' . $dir);
+    // "/projects/loops/src/FizzBuzz/"
 
     return (new \Haystack\HArray(scandir($src)))
         // [
@@ -1415,8 +1433,7 @@ function kataProvider($dir) {
                 </section>
                 <section data-transition="none">
 <pre><code class="php" data-trim>
-function kataProvider($dir)
-{
+function kataProvider($dir) {
     $src = realpath(__DIR__ . '/../src/' . $dir);
 
     return (new \Haystack\HArray(scandir($src)))
@@ -1526,14 +1543,78 @@ function kataProvider($dir) {
 
                 <section>
                     <h5>Available Today!</h5>
-                    <ul>
-                        <li><a href="https://github.com/ericpoe/haystack">Haystack</a></li>
-                        <li><a href="https://laravel.com/docs/5.2/collections">Laravel Collections</a></li>
-                        <li><a href="https://github.com/doctrine/collections">Doctrine Collections</a></li>
-                        <li><a href="https://github.com/mtdowling/transducers.php">transducers-php</a></li>
-                        <li><a href="https://github.com/mtdowling/transducers.php">Non-Standard PHP Library</a></li>
-                        <li>...lots more...</li>
+                    <ul class="link-list">
+                        <li>Haystack - <a href="https://github.com/ericpoe/haystack">github.com/ericpoe/haystack</a></li>
+                        <li>Laravel Collections - <a href="https://laravel.com/docs/5.2/collections">laravel.com/docs/5.2/collections</a></li>
+                        <li>Doctrine Collections - <a href="https://github.com/doctrine/collections">github.com/doctrine/collections</a></li>
                     </ul>
+                </section>
+
+                <section>
+                    <h5>Compatible with Drupal 8!</h5>
+                    <pre><code class="bash" data-trim>
+$ composer require ericpoe/haystack 2.0.x-dev
+</code></pre>
+                    <img src="images/haystack-drupal-8.png" class="no-border">
+                </section>
+
+                <section>
+                    <h5>Collection, Iteration, Pipeline libraries (in no order)</h5>
+                    <ul class="link-list">
+                        <li>transducers-php - <a href="https://github.com/mtdowling/transducers.php">github.com/mtdowling/transducers.php</a></li>
+                        <li>Knapsack - <a href="https://github.com/DusanKasan/Knapsack">github.com/DusanKasan/Knapsack</a></li>
+                        <li>Non-standard PHP library (NSPL) - <a href="https://github.com/ihor/Nspl">github.com/ihor/Nspl</a></li>
+                        <li>League\Pipeline - <a href="http://pipeline.thephpleague.com">pipeline.thephpleague.com</a></li>
+                        <li>nikic/iter - <a href="https://github.com/nikic/iter">github.com/nikic/iter</a></li>
+                        <li>PHP-DS Extension - <a href="http://tiny.cc/phpds">http://tiny.cc/phpds</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>The Future?</h3>
+                </section>
+
+                <section>
+                    <h5>PHP RFC: Pipe Operator |&gt;</h5>
+                    <pre><code class="php" data-trim>
+$response = loadConfig()
+    |> buildDic($$)
+    |> getApp($$)
+    |> getRouter($$)
+    |> getDispatcher($$, $request)
+    |> dispatchBusinessLogic($$, $request, new Response())
+    |> renderResponse($$)
+    |> buildPsr7Response($$)
+    |> emit($$);
+</code></pre>
+                    <a href="https://wiki.php.net/rfc/pipe-operator" class="visible-link">wiki.php.net/rfc/pipe-operator</a>
+                    <h5>In discussion, targeting PHP 7.2</h5>
+                </section>
+
+                <section>
+                    <h5>PHP RFC: Pipe Operator |&gt;</h5>
+                    <pre><code class="php" data-trim>
+function kataProvider($dir) {
+    $src = realpath(__DIR__ . '/../src/' . $dir);
+
+    return scandir($src)
+        |> array_map(function ($filename) use ($src) {
+            return sprintf('%s/%s', $src, $filename);
+        }, $$)
+        |> array_filter($$, function ($path) {
+            return false === is_dir($path);
+        })
+        |> array_map(function ($filepath) use ($src, $dir) {
+            $filepath = str_replace('.php', '', $filepath);
+            return str_replace($src . '/', '\\RethinkingLoops\\' . $dir . '\\', $filepath);
+        }, $$)
+        |> array_filter($$, function ($fqcn) {
+            return false === (new \ReflectionClass($fqcn))->isAbstract();
+        });
+}
+</code></pre>
+                    <a href="https://wiki.php.net/rfc/pipe-operator" class="visible-link">wiki.php.net/rfc/pipe-operator</a>
+                    <h5>In discussion, targeting PHP 7.2</h5>
                 </section>
 
                 <section>
@@ -1547,6 +1628,8 @@ $result = array_map(function($x) { return $x * 2; }, $elements);
 // proposed
 $result = array_map(function($x) => $x * 2, $elements);
 </code></pre>
+                    <a href="https://wiki.php.net/rfc/arrow_functions" class="visible-link">wiki.php.net/rfc/arrow_functions</a>
+                    <h5>In discussion, targeting PHP 7.2</h5>
                 </section>
 
                 <section>
@@ -1561,6 +1644,8 @@ $greetings = $friends
 echo join(", ", $greetings->toArray());
 // "Hello John, Hello Chris, Hello Megan"
 </code></pre>
+                    <a href="https://wiki.php.net/rfc/arrow_functions" class="visible-link">wiki.php.net/rfc/arrow_functions</a>
+                    <h5>In discussion, targeting PHP 7.2</h5>
                 </section>
 
                 <section>
@@ -1571,16 +1656,17 @@ $ composer create-project johnkary/rethinking-loops
                 </section>
 
                 <section>
-                    <h5>Reading List</h5>
-                    <ul>
-                        <li><a href="http://martinfowler.com/articles/collection-pipeline/">Martin Fowler on Pipelines</a></li>
-                        <li><a href="http://www.confidentruby.com/">Confident Ruby</a></li>
-                        <li><a href="http://www.catb.org/esr/writings/taoup/html/index.html">The Art of Unix Programming</a></li>
-                        <li><a href="https://www.youtube.com/watch?v=XvDZLjaCJuw">UNIX: Making Computers Easier To Use (1982)</a></li>
-                        <li><a href="http://shop.oreilly.com/product/0636920028857.do">Functional JavaScript</a></li>
-                        <li><a href="https://pragprog.com/book/btlang/seven-languages-in-seven-weeks">Seven Languages in Seven Weeks</a></li>
-                        <li><a href="https://mitpress.mit.edu/sicp/full-text/book/book.html">Structure and Interpretation of Computer Programs (SICP)</a></li>
-                        <li><a href="https://www.youtube.com/watch?v=6mTbuzafcII">Transducers in Clojure by Rich Hickey </a></li>
+                    <h5>Your Homework</h5>
+                    <ul class="link-list-small">
+                        <li>Collection Pipeline Design Techniques<br><a href="http://www.infoq.com/presentations/collection-pipelines" class="visible-link">infoq.com/presentations/collection-pipelines</a></li>
+                        <li>Martin Fowler on Pipelines<br><a href="http://martinfowler.com/articles/collection-pipeline/" class="visible-link">martinfowler.com/articles/collection-pipeline/</a></li>
+                        <li>Refactoring To Collections<br><a href="http://adamwathan.me/refactoring-to-collections/" class="visible-link">adamwathan.me/refactoring-to-collections/</a></li>
+                        <li>The Art of Unix Programming<br>
+                            <a href="http://www.catb.org/esr/writings/taoup/html/index.html" class="visible-link">catb.org/esr/writings/taoup/html/</a></li>
+                        <li>Functional JavaScript<br>
+                            <a href="http://shop.oreilly.com/product/0636920028857.do" class="visible-link">shop.oreilly.com/product/0636920028857.do</a></li>
+                        <li>Seven Languages in Seven Weeks<br><a href="https://pragprog.com/book/btlang/seven-languages-in-seven-weeks" class="visible-link">pragprog.com/book/btlang/seven-languages-in-seven-weeks</a></li>
+                        <li>Structure and Interpretation of Computer Programs (SICP) - <a href="https://mitpress.mit.edu/sicp/full-text/book/book.html" class="visible-link">mitpress.mit.edu/sicp/full-text/book/book.html</a></li>
                     </ul>
                 </section>
 
@@ -1638,27 +1724,60 @@ foreach ($list as $idx => $value) {
                 </section>
 
                 <section>
-                    <h5>Source Material Credits</h5>
-                    <ul>
-                        <li><a href="https://twitter.com/johnkary/status/596163674743644160">John Kary tweet</a></li>
-                        <li><a href="https://www.flickr.com/photos/tbrianjones/22135624309/">Title slide background</a></li>
-                        <li><a href="https://xkcd.com/chesscoaster/">Playing chess on roller coasters (xkcd)</a></li>
-                        <li><a href="https://twitter.com/detly/status/394755439314755584">This is why you shouldn't interrupt a programmer</a></li>
-                        <li><a href="https://joind.in/event/sunshinephp-2016/building-real-time-data-pipelines">Building Real-Time Data Pipelines by Samantha Quiñones</a></li>
-                        <li><a href="http://static.lukew.com/webforms_lukew.pdf">Best Practices For Form Design by Luke Wroblewski</a></li>
-                        <li><a href="https://en.wikipedia.org/wiki/Douglas_McIlroy">Picture of Douglas McIlroy</a></li>
-                        <li><a href="https://twitter.com/adamwathan/status/666819102581788672">Adam Wathan tweet</a></li>
+                    <h5>Sources</h5>
+                    <ul class="link-list-very-small">
+                        <li>Title slide background<br><a href="https://www.flickr.com/photos/tbrianjones/22135624309/" class="visible-link">https://www.flickr.com/photos/tbrianjones/22135624309/</a></li>
+                        <li>FizzBuzz without control structures tweet by John Kary<br><a href="https://twitter.com/johnkary/status/596163674743644160" class="visible-link">twitter.com/johnkary/status/596163674743644160</a></li>
+                        <li>Voltron tweet by Chris Paul @idiosynchris<br><a href="https://twitter.com/idiosynchris/status/719565179801853954" class="visible-link">twitter.com/idiosynchris/status/719565179801853954</a></li>
+                        <li>Playing chess on roller coasters (xkcd)<br><a href="https://xkcd.com/chesscoaster/" class="visible-link">xkcd.com/chesscoaster/</a></li>
+                        <li>This is why you shouldn't interrupt a programmer<br><a href="https://twitter.com/detly/status/394755439314755584" class="visible-link">twitter.com/detly/status/394755439314755584</a></li>
+                        <li>Building Real-Time Data Pipelines by Samantha Quiñones<br><a href="https://joind.in/event/sunshinephp-2016/building-real-time-data-pipelines" class="visible-link">joind.in/event/sunshinephp-2016/building-real-time-data-pipelines</a></li>
+                        <li>Best Practices For Form Design by Luke Wroblewski<br><a href="http://static.lukew.com/webforms_lukew.pdf" class="visible-link">static.lukew.com/webforms_lukew.pdf</a></li>
+                        <li>Picture of Douglas McIlroy<br><a href="https://en.wikipedia.org/wiki/Douglas_McIlroy" class="visible-link">en.wikipedia.org/wiki/Douglas_McIlroy</a></li>
+                        <li>Adam Wathan pipeline code tweet<br><a href="https://twitter.com/adamwathan/status/666819102581788672" class="visible-link">twitter.com/adamwathan/status/666819102581788672</a></li>
+                        <li>This Is Not A Pipe<br><a href="http://www.wikiart.org/en/rene-magritte/the-treachery-of-images-this-is-not-a-pipe-1948" class="visible-link">www.wikiart.org/en/rene-magritte/the-treachery-of-images-this-is-not-a-pipe-1948</a></li>
                     </ul>
                 </section>
 
+                <section>
+                    <h3>Join us for Sprints!</h3>
+                    <h4 style="margin-top:1em">Friday, May 13<br>Convention Center</h4>
+                    <table style="margin-top:2em">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Time</th>
+                                <th>Room</td>
+                            </tr>
+                        </thead>
+                        <tbody> 
+                            <tr>
+                                <td>First-Time Sprinter Workshop</td>
+                                <td>9am-12pm</td>
+                                <td>271-273</td>
+                            </tr>
+                            <tr>
+                                <td>Mentored Core Sprint</td>
+                                <td>9am-6pm</td>
+                                <td>275-277</td>
+                            </tr>
+                            <tr>
+                                <td>General Sprints</td>
+                                <td>9am-6pm</td>
+                                <td>278-282</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
                 <section data-background="images/questions-bg.jpg">
-                    <h2>Questions?</h2>
-                    <p><img src="images/question-box.jpg" style="width:25%"></p>
+                    <h3>Questions?</h3>
+                    <p><img src="images/this-is-not-a-pipe.jpg" style="width:43%"></p>
                     <p>
                         <small>
                             John Kary</a> &nbsp;•&nbsp; <a href="https://twitter.com/johnkary">@johnkary</a><br><br>
-                            Slides: <a href="http://johnkary.net/talks">http://johnkary.net/talks</a><br>
-                            Feedback: <a href="https://joind.in/event/lone-star-php-2016/rethinking-loops">https://joind.in/talk/342a2</a>
+                            Slides: <a href="http://johnkary.net/talks">johnkary.net/talks</a><br>
+                            Feedback: <a href="http://bit.ly/rethinking-loops-feedback1">http://bit.ly/rethinking-loops-feedback1</a>
                         </small>
                     </p>
                     <div id="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="images/cc-88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Rethinking Loops</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://johnkary.net/talks" property="cc:attributionName" rel="cc:attributionURL">John Kary</a> is licensed under a<br><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</div>
@@ -1666,9 +1785,9 @@ foreach ($list as $idx => $value) {
 
                 <section>
                     <h3>Performance?</h3>
-                    <ul>
-                        <li><a href="http://bit.ly/rethinking-loops-perf-1">Arrays vs Objects Benchmarks (5.6, 7.0)</a><br>http://bit.ly/rethinking-loops-perf-1<br><br></li>
-                        <li><a href="http://bit.ly/rethinking-loops-perf-2">Why objects (usually) use less memory than arrays in PHP</a><br>http://bit.ly/rethinking-loops-perf-2</li>
+                    <ul class="link-list">
+                        <li>Arrays vs Objects Benchmarks (5.6, 7.0)<br><a href="http://bit.ly/rethinking-loops-perf-1" class="visible-link">http://bit.ly/rethinking-loops-perf-1</a></li>
+                        <li>Why objects (usually) use less memory than arrays in PHP<br><a href="http://bit.ly/rethinking-loops-perf-2" class="visible-link">http://bit.ly/rethinking-loops-perf-2</a></li>
                     </ul>
                 </section>
 
@@ -1679,6 +1798,7 @@ foreach ($list as $idx => $value) {
                 </section>
 
                 <section>
+                    <a href="https://blackfire.io">https://blackfire.io</a><br>
                     <img src="images/blackfire-screenshot.png" class="no-border">
                 </section>
 

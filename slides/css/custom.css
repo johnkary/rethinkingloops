@@ -46,3 +46,41 @@ a, a:visited {
     content: "$";
     padding-right: 5px;
 }*/
+.reveal .feedback-banner {
+    margin-top:2em;
+    padding:1em;
+    font-size:0.8em;
+    width:100%;
+    background-color:rgb(87, 48, 140);
+    color:#fff;
+}
+.reveal .feedback-banner a {
+    color:#fff;
+    text-decoration: underline;
+}
+.reveal .link-list {
+    font-size:0.9em;
+}
+.reveal .link-list li {
+    font-size:1em;
+    padding:0.2em 0;
+}
+.reveal .link-list a, .reveal .visible-link {
+    font-size:0.8em;
+}
+.reveal .link-list-small li {
+    font-size:0.9em;
+    padding:0.25em 0;
+    line-height:0.95em;
+}
+.reveal .link-list-small a {
+    font-size:0.7em;
+}
+.reveal .link-list-very-small li {
+    font-size:0.7em;
+    padding:0.15em 0;
+    line-height:0.9em;
+}
+.reveal .link-list-very-small a {
+    font-size:0.6em;
+}
