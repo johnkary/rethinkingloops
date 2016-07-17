@@ -51,12 +51,6 @@
 				</section>
 
                 <section>
-                    <h3>Kansas City to New Orleans</h3>
-                    <h4>~700 mi or ~1100 km</h4>
-                    <img src="images/kc-to-nola.png" class="no-border">
-                </section>
-
-                <section>
                     <img src="images/kcpug.png" class="no-border">
                 </section>
 
@@ -142,19 +136,20 @@ echo join("\n", array_replace($all, $threes, $fives, $fifteens));
                     <small><a href="https://gist.github.com/jrmadsen67/5815505">By Jeff Madsen @codebyjeff</a></small>
                 </section>
 
-                <section>
-                    <p>What if we used arrays for (almost) everything?</p>
-                    <p class="fragment"><img src="images/druplicon-large.png" style="width:20%" class="no-border"></p>
-                </section>
-
                 <section data-transition="none">
                     <p>What if we used arrays for (almost) everything?</p>
                     <p class="fragment">Collection Oriented Programming</p>
-                    <p class="fragment">Functional Programming</p>
-                    <p class="fragment"><img src="images/druplicon-large.png" style="width:20%" class="no-border"></p>
+                    <p class="fragment">APL (1960s)<br><img src="images/apl.png"></p>
+                    <p class="fragment">J (1990)<br><img src="images/j.png"></p>
                 </section>
 
                 <section>
+                    <p>What if we used arrays for (almost) everything?</p>
+                    <h3 class="fragment">Functional Programming</h3>
+                </section>
+
+                <section>
+                    Clojure (2007)
                     <pre><code class="clojure" data-trim>
 (defn encode
   [#^InputStream input #^Writer output #^String alphabet line-length]
@@ -186,25 +181,7 @@ echo join("\n", array_replace($all, $threes, $fives, $fifteens));
                 </section>
 
                 <section>
-                    <h4>Functional Concepts</h4>
-                    <ul>
-                        <li>
-                            Map -- 1:1 transform
-                            <ul class="fragment"><li>Onions ==> Chopped Onions<br><br></li></ul>
-                        </li>
-                        <li class="fragment">
-                            Filter -- Only keep items where a condition returns true
-                            <ul class="fragment"><li>Keep only fresh Limes<br><br></li></ul>
-                        </li>
-                        <li class="fragment">
-                            Reduce -- Combine ingredients into something new!
-                            <ul class="fragment"><li>Wet ingredients + Dry ingredients</li></ul>
-                        </li>
-                    </ul>
-                </section>
-
-                <section>
-                    <h5>array_map</h5>
+                    <h4>Map</h4>
                     <pre><code class="php" data-trim>
 // array_map ( callable $callback , array $array1 [, array $... ] )
 
@@ -219,7 +196,7 @@ $end = array_map($fn, $start);
                 </section>
 
                 <section>
-                    <h5>array_filter</h5>
+                    <h5>Filter</h5>
                     <pre><code class="php" data-trim>
 // array_filter ( array $array [, callable $callback [, int $flag = 0 ]] )
 
@@ -233,7 +210,7 @@ $even = array_filter($start, function ($i) {
                 </section>
 
                 <section>
-                    <h5>array_reduce</h5>
+                    <h5>Reduce</h5>
                     <pre><code class="php stretch" data-trim>
 // array_reduce ( array $array , callable $callback [, mixed $initial = NULL ] )
 
@@ -253,13 +230,13 @@ $end = array_reduce($start, function ($total, $i) {
 
                 <section>
                     <h3>Expressive Language</h3>
-                    <h3 style="color:red;" class="fragment">Cool</h3>
+                    <img src="images/wolves.png" class="no-border fragment">
                 </section>
 
                 <section data-transition="none">
                     <h5>Expressive Language</h5>
 
-                    <ul>
+                    <ul class="fragment">
                         <li>Chess is <span class="red">cool</span></li>
                         <li class="fragment">Roller coasters are <span class="red">cool</span></li>
                         <li class="fragment">Playing chess on a roller coaster is <span class="red">cool</span></li>
@@ -280,7 +257,7 @@ $end = array_reduce($start, function ($total, $i) {
                     </ul>
                 </section>
 
-                <section data-transition="none">
+                <section>
                     <h3>Expressive Code</h3>
                 </section>
 
@@ -354,58 +331,6 @@ $sum = array_reduce($scores, function ($end, $i) {
 </code></pre>
                 </section>
 
-                <section data-transition="none">
-                    <h5>Users who are minors</h5>
-                    <pre><code class="php" data-trim>
-$data = [
-    ['age' => 31, 'name' => 'John'],
-    ['age' => 12, 'name' => 'Jamie'],
-    ['age' => 8, 'name' => 'Megan'],
-];
-$users = array_map(function($u) { return (object) $u; }, $data);
-
-// array(3) {
-//   [0] => class stdClass#2 (2) {
-//     public $age => int(31)
-//     public $name => string(4) "John"
-//   }
-//   [1] => class stdClass#3 (2) {
-//      public $age => int(12)
-//      public $name => string(5) "Jamie"
-//   }
-//   [2] => class stdClass#4 (2) {
-//     public $age => int(8)
-//     public $name => string(5) "Megan"
-//   }
-// }
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <h5>Users who are minors</h5>
-                    <pre><code class="php" data-trim>
-$minors = array_filter($users, function($user) {
-    return $user->age < 18;
-});
-
-// [Jamie, Megan]
-</code></pre>
-                    <pre class="fragment"><code class="php" data-trim>
-count($minors); // int(2)
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <h5>Users who are minors</h5>
-                    <pre><code class="php" data-trim>
-$minors = array_reduce($users, function($count, $user) {
-    return $count + (int) ($user->age < 18);
-});
-
-// int(2)
-</code></pre>
-                </section>
-
                 <section>
                     <img src="images/functions-in-out.png" class="stretch no-border">
                 </section>
@@ -474,7 +399,7 @@ echo $greeting('John'); // "Hello John"
                 </section>
 
                 <section>
-                    <h5>Scope</h5>
+                    <h5>Local Variables</h5>
                     <!--
                     Variables outside function are not accessible inside
                     We control what goes in and what comes out
@@ -492,7 +417,7 @@ function sayHello($name) {
                 </section>
 
                 <section data-transition="none">
-                    <h5>Scope</h5>
+                    <h5>Global Variables</h5>
                     <!-- global keyword brings in variables -->
                     <pre><code class="php" data-trim class="stretch">
 $method = "GET";
@@ -508,36 +433,7 @@ function sayHello($name) {
                 </section>
 
                 <section data-transition="none">
-                    <h5>Scope</h5>
-                    <!-- One way is to pass these values in -->
-                    <pre><code class="php" data-trim class="stretch">
-$method = "GET";
-
-function sayHello($name, $verb) {
-    return sprintf('Hello %s via %s', $name, $verb);
-}
-
-echo sayHello('John', $method); // "Hello John via GET"
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <!-- Variables inside functions are not accessible outside -->
-                    <h5>Scope</h5>
-                    <pre><code class="php" data-trim class="stretch">
-function sayHello($name) {
-    return 'Hello ' . $name;
-}
-
-sayHello('John'); // "Hello John"
-echo $name;
-// `PHP Notice: Undefined variable: name ...`
-// because $name is not accessible in enclosing scope
-</code></pre>
-                </section>
-
-                <section data-transition="none">
-                    <h5>Scope</h5>
+                    <h5>Closure Variables</h5>
                     <!-- Another is `use` when using closures -->
                     <pre><code class="php" data-trim class="stretch">
 $method = "GET";
@@ -548,14 +444,6 @@ $greeting = function($name) use ($method) {
 
 echo $greeting('John'); // "Hello John via GET"
 </code></pre>
-                </section>
-
-                <section>
-                    <!--
-                        Consistent scope is good because it explicitly documents what is accessible
-                        This puts less strain on our working memory
-                    -->
-                    <img src="images/functions-in-out.png" class="stretch no-border">
                 </section>
 
                 <section>
@@ -572,20 +460,14 @@ class User {
         return $u;
     }
 }
-
-$rows = [
-    ['name' => 'Sarah', 'age' => 58],
-    ['name' => 'Matt', 'age' => 52],
-    ['name' => 'Mickey', 'age' => 42],
-];
 </code></pre>
                 </section>
                 <section>
-                    <h5>array_* accepts many callables</h5>
+                    <h5>array_* accepts all callables</h5>
                     <pre><code class="php" data-trim>
 $rows = [
-    ['name' => 'Sarah', 'age' => 58],
-    ['name' => 'Matt', 'age' => 52],
+    ['name' => 'Sarah',  'age' => 58],
+    ['name' => 'Matt',   'age' => 52],
     ['name' => 'Mickey', 'age' => 42],
 ];
 
@@ -603,6 +485,14 @@ $users = array_map(['User', 'fromArray'], $rows);
 $u = new User();
 $users = array_map([$u, 'fromArray'], $rows);
 </code></pre>
+                </section>
+
+                <section>
+                    <!--
+                        Consistent scope is good because it explicitly documents what is accessible
+                        This puts less strain on our working memory
+                    -->
+                    <img src="images/functions-in-out.png" class="stretch no-border">
                 </section>
 
                 <section>
@@ -707,6 +597,41 @@ function doComplicatedThing() {
                         <li class="fragment">How many bacon strips were <span class="red">prepared</span> today?</li>
                         <li class="fragment">How many bacon strips were <span class="red">eaten</span> today?</li>
                     </ul>
+                </section>
+
+                <section data-transition="none">
+                    <pre><code class="php" data-trim>
+for ($i = 0, $for_max = count($cached_inserts); $i < $for_max; $i++) {
+    if ($smarty->debugging) {
+        $_params = array();
+        require_once(SMARTY_CORE_DIR . 'core.get_microtime.php');
+    }
+    $args = unserialize($insert_args[$i]); $name = $args['name'];
+
+    if (isset($args['script'])) {
+        if(!smarty_core_get_php_resource($_params, $smarty)) {
+            return false;
+        }
+        $php_resource = $_params['php_resource'];
+
+        if ($resource_type == 'file') {
+            $smarty->_include($php_resource, true);
+        } else {
+            $smarty->_eval($php_resource);
+        }
+    }
+
+    $params['results'] = substr_replace($params['results'], $replace, strpos($params['results'], $cached_inserts[$i]), strlen($cached_inserts[$i]));
+    if ($smarty->debugging) {
+        $_params = array();
+        require_once(SMARTY_CORE_DIR . 'core.get_microtime.php');
+        $smarty->_smarty_debug_info[] = array('type'      => 'insert',
+                                              'exec_time' => smarty_core_get_microtime($_params, $smarty) - $debug_start_time);
+    }
+}
+
+return $params['results'];
+</code></pre>
                 </section>
 
                 <section>
@@ -941,6 +866,10 @@ array_map($fn, $array, [$...])
 array_filter($array, $fn)
 array_reduce($array, $fn, $initial)
 </code></pre>
+                </section>
+
+                <section data-transition="none">
+                    <img src="images/wat.jpg" class="no-border" style="width:40%">
                 </section>
 
                 <section>
@@ -1551,27 +1480,7 @@ function kataProvider($dir) {
                 </section>
 
                 <section>
-                    <h5>Compatible with Drupal 8!</h5>
-                    <pre><code class="bash" data-trim>
-$ composer require ericpoe/haystack 2.0.x-dev
-</code></pre>
-                    <img src="images/haystack-drupal-8.png" class="no-border">
-                </section>
-
-                <section>
-                    <h5>Collection, Iteration, Pipeline libraries (in no order)</h5>
-                    <ul class="link-list">
-                        <li>transducers-php - <a href="https://github.com/mtdowling/transducers.php">github.com/mtdowling/transducers.php</a></li>
-                        <li>Knapsack - <a href="https://github.com/DusanKasan/Knapsack">github.com/DusanKasan/Knapsack</a></li>
-                        <li>Non-standard PHP library (NSPL) - <a href="https://github.com/ihor/Nspl">github.com/ihor/Nspl</a></li>
-                        <li>League\Pipeline - <a href="http://pipeline.thephpleague.com">pipeline.thephpleague.com</a></li>
-                        <li>nikic/iter - <a href="https://github.com/nikic/iter">github.com/nikic/iter</a></li>
-                        <li>PHP-DS Extension - <a href="http://tiny.cc/phpds">http://tiny.cc/phpds</a></li>
-                    </ul>
-                </section>
-
-                <section>
-                    <h3>The Future?</h3>
+                    <h3>The Future in PHP?</h3>
                 </section>
 
                 <section>
@@ -1649,6 +1558,14 @@ echo join(", ", $greetings->toArray());
                 </section>
 
                 <section>
+                    <h3>The Future in Web?</h3>
+                </section>
+
+                <section>
+                    <img src="images/streams.jpg" class="no-border">
+                </section>
+
+                <section>
                     <h5>Rethinking Loops Playground</h5>
                     <pre><code class="bash" data-trim>
 $ composer create-project johnkary/rethinking-loops
@@ -1666,7 +1583,7 @@ $ composer create-project johnkary/rethinking-loops
                         <li>Functional JavaScript<br>
                             <a href="http://shop.oreilly.com/product/0636920028857.do" class="visible-link">shop.oreilly.com/product/0636920028857.do</a></li>
                         <li>Seven Languages in Seven Weeks<br><a href="https://pragprog.com/book/btlang/seven-languages-in-seven-weeks" class="visible-link">pragprog.com/book/btlang/seven-languages-in-seven-weeks</a></li>
-                        <li>Structure and Interpretation of Computer Programs (SICP) - <a href="https://mitpress.mit.edu/sicp/full-text/book/book.html" class="visible-link">mitpress.mit.edu/sicp/full-text/book/book.html</a></li>
+                        <li>Structure and Interpretation of Computer Programs (SICP) <a href="https://mitpress.mit.edu/sicp/full-text/book/book.html" class="visible-link">mitpress.mit.edu/sicp/full-text/book/book.html</a></li>
                     </ul>
                 </section>
 
@@ -1718,6 +1635,25 @@ foreach ($list as $idx => $value) {
                 </section>
 
                 <section>
+                    <pre style="width:80%"><code class="php stretch" data-trim>
+$start = [1, 2, 3, 4, 5];
+
+echo (new \Haystack\HArray($start))
+    ->map(function ($i) {
+        return $i * 2;
+    })
+    ->filter(function ($i) {
+        return $i < 9;
+    })
+    ->reduce(function ($sum, $i) {
+        return $sum + $i;
+    });
+
+// 20
+</code></pre>
+                </section>
+
+                <section>
                     <h3>Bugs cannot exist<br>in code that doesn't exist</h3>
                     <h3 class="fragment" style="margin-top:1em;">Be Expressive</h3>
                     <h3 class="fragment" style="margin-top:1em;">Thanks.</h3>
@@ -1729,6 +1665,7 @@ foreach ($list as $idx => $value) {
                         <li>Title slide background<br><a href="https://www.flickr.com/photos/tbrianjones/22135624309/" class="visible-link">https://www.flickr.com/photos/tbrianjones/22135624309/</a></li>
                         <li>FizzBuzz without control structures tweet by John Kary<br><a href="https://twitter.com/johnkary/status/596163674743644160" class="visible-link">twitter.com/johnkary/status/596163674743644160</a></li>
                         <li>Voltron tweet by Chris Paul @idiosynchris<br><a href="https://twitter.com/idiosynchris/status/719565179801853954" class="visible-link">twitter.com/idiosynchris/status/719565179801853954</a></li>
+                        <li>Wolves painting<br><a href="http://s278.photobucket.com/user/trueSoulWolfDemon/media/Wolves/Wolvesb.jpg.html">s278.photobucket.com/user/trueSoulWolfDemon/media/Wolves/Wolvesb.jpg.html</a></li>
                         <li>Playing chess on roller coasters (xkcd)<br><a href="https://xkcd.com/chesscoaster/" class="visible-link">xkcd.com/chesscoaster/</a></li>
                         <li>This is why you shouldn't interrupt a programmer<br><a href="https://twitter.com/detly/status/394755439314755584" class="visible-link">twitter.com/detly/status/394755439314755584</a></li>
                         <li>Building Real-Time Data Pipelines by Samantha Quiñones<br><a href="https://joind.in/event/sunshinephp-2016/building-real-time-data-pipelines" class="visible-link">joind.in/event/sunshinephp-2016/building-real-time-data-pipelines</a></li>
@@ -1739,37 +1676,6 @@ foreach ($list as $idx => $value) {
                     </ul>
                 </section>
 
-                <section>
-                    <h3>Join us for Sprints!</h3>
-                    <h4 style="margin-top:1em">Friday, May 13<br>Convention Center</h4>
-                    <table style="margin-top:2em">
-                        <thead>
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th>Time</th>
-                                <th>Room</td>
-                            </tr>
-                        </thead>
-                        <tbody> 
-                            <tr>
-                                <td>First-Time Sprinter Workshop</td>
-                                <td>9am-12pm</td>
-                                <td>271-273</td>
-                            </tr>
-                            <tr>
-                                <td>Mentored Core Sprint</td>
-                                <td>9am-6pm</td>
-                                <td>275-277</td>
-                            </tr>
-                            <tr>
-                                <td>General Sprints</td>
-                                <td>9am-6pm</td>
-                                <td>278-282</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </section>
-
                 <section data-background="images/questions-bg.jpg">
                     <h3>Questions?</h3>
                     <p><img src="images/this-is-not-a-pipe.jpg" style="width:43%"></p>
@@ -1777,7 +1683,7 @@ foreach ($list as $idx => $value) {
                         <small>
                             John Kary</a> &nbsp;•&nbsp; <a href="https://twitter.com/johnkary">@johnkary</a><br><br>
                             Slides: <a href="http://johnkary.net/talks">johnkary.net/talks</a><br>
-                            Feedback: <a href="http://bit.ly/rethinking-loops-feedback1">http://bit.ly/rethinking-loops-feedback1</a>
+                            Feedback: <a href="https:///joind.in/talk/a7c43">joind.in/talk/a7c43</a>
                         </small>
                     </p>
                     <div id="license"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="images/cc-88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Rethinking Loops</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://johnkary.net/talks" property="cc:attributionName" rel="cc:attributionURL">John Kary</a> is licensed under a<br><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</div>
@@ -1800,6 +1706,16 @@ foreach ($list as $idx => $value) {
                 <section>
                     <a href="https://blackfire.io">https://blackfire.io</a><br>
                     <img src="images/blackfire-screenshot.png" class="no-border">
+                </section>
+
+                <section>
+                    <h3>Handling Errors?</h3>
+                    <p>
+                        Railway Oriented Programming:<br>A functional approach to error handling<br><a href="https://fsharpforfunandprofit.com/rop/" class="visible-link">fsharpforfunandprofit.com/rop/</a>
+                    </p>
+
+                    <img src="images/railway.png">
+
                 </section>
 
                 <section>
@@ -1927,57 +1843,6 @@ function findUserGroups($users) {
                     <h1>:)</h1>
                 </section>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-               <!--   -->
-
-
-
-				<!-- <section>
-					<pre class="stretch"><code class="php" data-trim>
-// Save custom field data before doing validation check so that this is still updated if the
-// time validation fails
-// todo: check on field validity
-$customFieldValues = $this->getRequestParam("customFieldValues");
-if ($customFieldValues) {
-    foreach ($customFieldValues as $custValueInfo) {
-        $valueEntry = $reservation->getCustomFieldValueEntry($custValueInfo['id']);
-        // Not found, this is the first time they're setting the value, so we need
-        // to create a new entry
-        if (!$valueEntry) {
-            $customField = $resource->getCustomField($custValueInfo['id']);
-            if (!$customField) {
-                throw new \InvalidArgumentException("...");
-            }
-
-            $valueEntry = new ReservationCustomFieldValueEntry();
-            $valueEntry->setField($customField);
-            $reservation->addCustomFieldValue($valueEntry);
-        }
-
-        $valueEntry->setValue($custValueInfo['value']);
-    }
-}
-</code></pre>
-				</section> -->
-
-				<!-- <section>
-					<p><strong>your program</strong> <em>n</em>. A maze of non sequiturs littered with clever-clever tricks and irrelevant comments. <em>Compare</em> MY PROGRAM.</p>
-					<p><strong>my program</strong> <em>n</em>. A gem of algoristic precision, offering the most sublime balance between compact, efficient coding on the one hand and fully commented legibility for posterity on the other. Compare YOUR PROGRAM.</p>
-					<p>Stan Kelly-Bootle</p>
-				</section> -->
 			</div>
 
 		</div>
