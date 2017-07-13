@@ -845,6 +845,39 @@ if ($request->getMethod() !== 'POST') {
 </code></pre>
                 </section>
 
+                <section data-transition="none">
+                    <!-- Sandy Metz - 99 Bottles Page 64/65
+                    if/else checks wildly different cases; who knows what we'll find inside those parens
+                    switch says we are going to examine ONE value and do different things when it equals different values
+
+                    This is subtle, but encodes intentions into the code
+                -->
+                    <h5>If/Else vs Switch/Case</h5>
+
+                    <pre class="fragment"><code class="php" data-trim>
+if ($number === 1) {
+    // Do something
+} else if ($number === 2) {
+    // Do something else
+} else {
+    // Last case
+}
+</code></pre>
+
+                    <pre class="fragment"><code class="php" data-trim>
+switch ($number) {
+    case 1:
+        // Do something
+        break;
+    case 2:
+        // Do something else
+        break;
+    default:
+        // Last case
+        break;
+</code></pre>
+                </section>
+
                 <section>
                     <h5>Chain Method Calls</h5>
                     <!-- Readable, Reasonable -->
