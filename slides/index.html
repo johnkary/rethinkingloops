@@ -182,7 +182,15 @@ echo join("\n", array_replace($all, $threes, $fives, $fifteens));
 
                 <section>
                     <h4>Map</h4>
-                    <pre><code class="php" data-trim>
+                    <pre>
+1,                  2,
+2,                  4,
+3,  -->  f(x)  -->  6,
+4,                  8,
+5,                  10,
+</pre>
+
+                    <pre class="fragment"><code class="php" data-trim>
 // array_map ( callable $callback , array $array1 [, array $... ] )
 
 $start = [1, 2, 3, 4, 5];
@@ -197,7 +205,15 @@ $end = array_map($fn, $start);
 
                 <section>
                     <h5>Filter</h5>
-                    <pre><code class="php" data-trim>
+                    <pre>
+1,
+2,                  2,
+3,  -->  f(x)  -->
+4,                  4,
+5,
+6,                  6,
+</pre>
+                    <pre class="fragment"><code class="php" data-trim>
 // array_filter ( array $array [, callable $callback [, int $flag = 0 ]] )
 
 $start = [1, 2, 3, 4, 5, 6];
@@ -211,7 +227,14 @@ $even = array_filter($start, function ($i) {
 
                 <section>
                     <h5>Reduce</h5>
-                    <pre><code class="php stretch" data-trim>
+                    <pre>
+1,
+2,
+3,  -->  f(x)  -->  15
+4,
+5,
+</pre>
+                    <pre class="fragment"><code class="php stretch" data-trim>
 // array_reduce ( array $array , callable $callback [, mixed $initial = NULL ] )
 
 $start = [1, 2, 3, 4, 5];
